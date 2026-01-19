@@ -28,7 +28,71 @@
       margin-bottom: 20px;
     }
 
-    /* GRID SYSTEM */
+    /* Capa de imagem */
+    .cover-image {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+
+    /* Menu Hambúrguer */
+    .menu-icon {
+      display: none;
+      cursor: pointer;
+      font-size: 30px;
+      color: #333;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background-color: #2c3e50;
+    }
+
+    nav ul {
+      display: flex;
+      list-style-type: none;
+    }
+
+    nav ul li {
+      padding: 10px;
+    }
+
+    nav ul li a {
+      color: #ecf0f1;
+      text-decoration: none;
+      padding: 5px 15px;
+    }
+
+    nav ul li a:hover {
+      background-color: #3498db;
+      border-radius: 5px;
+    }
+
+    /* Menu hambúrguer responsivo */
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .menu-icon {
+        display: block;
+      }
+
+      nav ul li {
+        text-align: center;
+        width: 100%;
+      }
+
+      nav ul.active {
+        display: flex;
+      }
+    }
+
+    /* Grid responsivo */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -36,7 +100,6 @@
       padding: 20px;
     }
 
-    /* Cartões de vídeo e imagem */
     .card {
       background: #fff;
       padding: 15px;
@@ -55,7 +118,6 @@
       border-radius: 6px;
     }
 
-    /* Botões */
     button {
       background-color: #3498db;
       color: #fff;
@@ -68,6 +130,29 @@
 
     button:hover {
       background-color: #2980b9;
+    }
+
+    /* Filtro de Pesquisa */
+    .search-bar {
+      width: 100%;
+      max-width: 600px;
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-bar input {
+      width: 80%;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .category-select {
+      margin: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
 
     /* Rodapé */
@@ -91,29 +176,6 @@
       text-decoration: underline;
     }
 
-    /* Responsividade */
-    @media (max-width: 768px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .card iframe, .card img, .card video {
-        height: 250px;
-      }
-    }
-
-    /* Animações e efeitos */
-    .fade-in {
-      opacity: 0;
-      animation: fadeIn 1s forwards;
-    }
-
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-
     /* Lazy Loading */
     .lazy {
       display: block;
@@ -124,121 +186,109 @@
     .lazy.loaded {
       opacity: 1;
     }
-
   </style>
-
 </head>
+
 <body>
+
+  <img src="https://via.placeholder.com/1920x250?text=Imagem+Capa+do+Site" class="cover-image" alt="Imagem de Capa">
+
+  <!-- Menu Hambúrguer -->
+  <nav>
+    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+    <ul id="menu">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#media">Mídia</a></li>
+      <li><a href="#upload">Upload</a></li>
+      <li><a href="#contact">Contato</a></li>
+    </ul>
+  </nav>
 
   <h1>Site de Prática – Imagens e Vídeos</h1>
 
-  <!-- Vídeos de Redes Sociais (Embarações Responsivas) -->
+  <!-- Filtro de Pesquisa -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Pesquisar vídeos e imagens..." onkeyup="searchContent()">
+  </div>
+
+  <!-- Filtro de Categorias -->
+  <div class="category-select">
+    <select id="categorySelect" onchange="filterByCategory()">
+      <option value="">Escolher Categoria</option>
+      <option value="Natureza">Natureza</option>
+      <option value="Tecnologia">Tecnologia</option>
+      <option value="Música">Música</option>
+    </select>
+  </div>
+
+  <!-- Vídeos de Redes Sociais -->
   <h2>Vídeos de Redes Sociais</h2>
-  <div class="grid">
-    <!-- Facebook Video -->
-    <div class="card fade-in">
-      <iframe
-        src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/facebook/videos/10153231379946729/"
-        height="315"
-        frameborder="0"
-        allowfullscreen>
-      </iframe>
+  <div class="grid" id="mediaGrid">
+    <!-- Exemplo de Vídeos -->
+    <div class="card" data-title="Vídeo Facebook" data-category="Natureza">
+      <iframe src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/facebook/videos/10153231379946729/" height="315" frameborder="0" allowfullscreen></iframe>
     </div>
 
-    <!-- Instagram Video -->
-    <div class="card fade-in">
-      <iframe
-        src="https://www.instagram.com/p/CI-VZq4KZ9C/embed"
-        height="400"
-        frameborder="0">
-      </iframe>
+    <div class="card" data-title="Vídeo Instagram" data-category="Tecnologia">
+      <iframe src="https://www.instagram.com/p/CI-VZq4KZ9C/embed" height="400" frameborder="0"></iframe>
     </div>
 
-    <!-- TikTok Video -->
-    <div class="card fade-in">
-      <iframe
-        src="https://www.tiktok.com/embed/6896350487012405766"
-        height="400"
-        frameborder="0"
-        allowfullscreen>
-      </iframe>
+    <div class="card" data-title="Vídeo TikTok" data-category="Música">
+      <iframe src="https://www.tiktok.com/embed/6896350487012405766" height="400" frameborder="0" allowfullscreen></iframe>
     </div>
 
-    <!-- YouTube Video -->
-    <div class="card fade-in">
-      <iframe
-        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-        height="315"
-        frameborder="0"
-        allowfullscreen>
-      </iframe>
+    <div class="card" data-title="Vídeo YouTube" data-category="Tecnologia">
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" height="315" frameborder="0" allowfullscreen></iframe>
     </div>
   </div>
 
-  <!-- Imagens (Placeholders Substituídos por URLs reais) -->
-  <h2>Imagens (Exemplos Reais)</h2>
-  <div class="grid">
-    <div class="card fade-in">
-      <img class="lazy" data-src="https://www.w3schools.com/w3images/lights.jpg" alt="Imagem 1">
-    </div>
-    <div class="card fade-in">
-      <img class="lazy" data-src="https://www.w3schools.com/w3images/fjords.jpg" alt="Imagem 2">
-    </div>
-    <div class="card fade-in">
-      <img class="lazy" data-src="https://www.w3schools.com/w3images/forest.jpg" alt="Imagem 3">
-    </div>
-    <div class="card fade-in">
-      <img class="lazy" data-src="https://www.w3schools.com/w3images/mountains.jpg" alt="Imagem 4">
-    </div>
-  </div>
-
-  <!-- Upload de Arquivos (Imagens e Vídeos) -->
+  <!-- Carregar Imagens e Vídeos -->
   <h2>Carregar Imagens e Vídeos</h2>
-  <input
-    type="file"
-    accept="image/*,video/*"
-    multiple
-    onchange="previewFiles(this.files)">
-  <div id="preview" class="upload-preview"></div>
+  <form action="upload.php" method="POST" enctype="multipart/form-data">
+    <input type="file" name="fileToUpload[]" accept="image/*,video/*" multiple>
+    <button type="submit">Enviar Arquivos</button>
+  </form>
 
-  <!-- Rodapé -->
   <footer>
     <p>Desenvolvido por <strong>Dala De Carvalho</strong> | Afrokódico Engene</p>
-    <p>
-      <a href="mailto:dala@afrokodico.com">Contato</a> |
-      <a href="https://www.afrokodico.com" target="_blank">Visite nosso site</a>
-    </p>
+    <p><a href="mailto:dala@afrokodico.com">Contato</a> | <a href="https://www.afrokodico.com" target="_blank">Visite nosso site</a></p>
   </footer>
 
   <script>
-    // Função de visualização de arquivos (imagens e vídeos locais)
-    function previewFiles(files) {
-      const preview = document.getElementById('preview');
-      preview.innerHTML = "";
-
-      Array.from(files).forEach(file => {
-        const url = URL.createObjectURL(file);
-
-        const div = document.createElement("div");
-        div.classList.add("card");
-
-        if (file.type.startsWith("image")) {
-          const img = document.createElement("img");
-          img.src = url;
-          img.classList.add("lazy");
-          img.onload = () => img.classList.add("loaded");
-          div.appendChild(img);
+    // Função para pesquisar conteúdo (vídeos e imagens)
+    function searchContent() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      
+      cards.forEach(card => {
+        const title = card.getAttribute('data-title').toLowerCase();
+        if (title.includes(searchTerm)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
         }
-
-        if (file.type.startsWith("video")) {
-          const video = document.createElement("video");
-          video.src = url;
-          video.controls = true;
-          div.appendChild(video);
-        }
-
-        preview.appendChild(div);
       });
+    }
+
+    // Filtrar conteúdo por categoria
+    function filterByCategory() {
+      const category = document.getElementById('categorySelect').value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      
+      cards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category').toLowerCase();
+        if (category === '' || cardCategory.includes(category)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Menu hambúrguer
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      menu.classList.toggle('active');
     }
 
     // Lazy loading de imagens

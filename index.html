@@ -43,7 +43,8 @@
         /* Estilos Globais */
         body { 
             font-family: 'Roboto', sans-serif; 
-            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); 
+            /* Gradiente escuro para manter a estética original, mas garantindo renderização */
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); 
             color: #e2e8f0; 
             margin: 0; 
             padding: 0;
@@ -91,7 +92,7 @@
     <div id="root">
         <div id="loading-msg">
             <i class="fas fa-circle-notch fa-spin fa-3x"></i>
-            <p>Sincronizando Nexus...</p>
+            <p>Carregando Nexus...</p>
         </div>
     </div>
 
@@ -115,8 +116,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- DADOS INICIAIS CORRIGIDOS ---
-        // CORREÇÃO CRÍTICA: Adicionado 'comments: []' ao terceiro item para evitar crash no .length
+        // --- DADOS INICIAIS ---
         const initialPosts = [
             { 
                 id: 1, 
@@ -127,7 +127,7 @@
                 title: "O Futuro da IA na África", 
                 category: "Tecnologia", 
                 likes: 120, 
-                comments: [], // Array existe
+                comments: [], 
                 isLive: false 
             },
             { 
@@ -139,7 +139,7 @@
                 title: "Arte Generativa #04", 
                 category: "Arte", 
                 likes: 45, 
-                comments: [], // Array existe
+                comments: [], 
                 isLive: false 
             },
             { 
@@ -151,7 +151,7 @@
                 title: "🔴 AULA AO VIVO: React Native", 
                 category: "Educação", 
                 viewers: 1542, 
-                comments: [], // CORREÇÃO: Adicionado campo faltante que causava o erro
+                comments: [], // Correção vital mantida
                 likes: 890,
                 isLive: true 
             }
@@ -271,7 +271,6 @@
         };
 
         const MediaCard = ({ post, onLike }) => {
-            // PROTEÇÃO: Garante que comments não seja undefined antes de ler .length
             const commentsCount = (post.comments && post.comments.length) ? post.comments.length : 0;
             const likesCount = post.likes || 0;
 
@@ -315,7 +314,6 @@
                                 </button>
                                 <button className="text-gray-300 hover:text-afro-primary transition flex items-center gap-2">
                                     <i className="far fa-comment"></i> 
-                                    {/* CORREÇÃO: Usando a variável segura commentsCount */}
                                     <span>{commentsCount}</span>
                                 </button>
                                 <button className="text-gray-300 hover:text-green-400 transition">
@@ -333,8 +331,11 @@
             );
         };
 
+        // --- COMPONENTES RESTAURADOS ---
+
         const MonetizationHub = () => (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
+                {/* Cabeçalho */}
                 <div className="glass p-6 rounded-xl md:col-span-3 flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-slate-900 to-slate-800 border border-white/10">
                     <div className="mb-4 md:mb-0 text-center md:text-left">
                         <h3 className="text-gray-400 text-sm font-bold uppercase tracking-wider">Saldo na Carteira</h3>
@@ -346,14 +347,38 @@
                     </button>
                 </div>
 
+                {/* RESTAURADO: Plano Grátis */}
+                <div className="glass p-6 rounded-xl border-t-4 border-gray-500 hover:bg-white/5 transition">
+                    <h3 className="text-xl font-bold mb-2 text-white">Criador Grátis</h3>
+                    <ul className="text-sm text-gray-400 space-y-3 mb-6">
+                        <li className="flex items-center"><i className="fas fa-check text-green-500 mr-2"></i> Uploads HD (720p)</li>
+                        <li className="flex items-center"><i className="fas fa-check text-green-500 mr-2"></i> Anúncios padrão</li>
+                        <li className="flex items-center"><i className="fas fa-info-circle text-gray-500 mr-2"></i> Taxa: 30%</li>
+                    </ul>
+                    <button className="w-full py-2 border border-gray-600 rounded text-gray-400 cursor-not-allowed font-medium">Plano Atual</button>
+                </div>
+
+                {/* Plano Pro */}
                 <div className="glass p-6 rounded-xl border-t-4 border-afro-primary relative transform md:scale-105 shadow-2xl bg-slate-800">
                     <span className="absolute -top-3 right-4 bg-afro-primary text-slate-900 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Melhor Escolha</span>
                     <h3 className="text-xl font-bold mb-2 text-white">Nexus Pro</h3>
                     <ul className="text-sm text-gray-300 space-y-3 mb-6">
                         <li className="flex items-center"><i className="fas fa-check text-afro-primary mr-2"></i> Uploads 4K & VR</li>
                         <li className="flex items-center"><i className="fas fa-check text-afro-primary mr-2"></i> Zero anúncios</li>
+                        <li className="flex items-center"><i className="fas fa-check text-afro-primary mr-2"></i> Taxa: 5%</li>
                     </ul>
                     <button className="w-full py-3 bg-afro-primary text-slate-900 font-bold rounded hover:bg-white transition shadow-lg shadow-afro-primary/20">Assinar (20 AKC)</button>
+                </div>
+
+                {/* RESTAURADO: Plano Partner */}
+                <div className="glass p-6 rounded-xl border-t-4 border-afro-gold hover:bg-white/5 transition">
+                    <h3 className="text-xl font-bold mb-2 text-afro-gold">Partner</h3>
+                    <ul className="text-sm text-gray-400 space-y-3 mb-6">
+                        <li className="flex items-center"><i className="fas fa-check text-afro-gold mr-2"></i> Streaming ilimitado</li>
+                        <li className="flex items-center"><i className="fas fa-check text-afro-gold mr-2"></i> Monetização direta</li>
+                        <li className="flex items-center"><i className="fas fa-check text-afro-gold mr-2"></i> Suporte Dedicado</li>
+                    </ul>
+                    <button className="w-full py-2 border border-afro-gold text-afro-gold rounded hover:bg-afro-gold hover:text-slate-900 transition">Contatar Vendas</button>
                 </div>
             </div>
         );
@@ -370,6 +395,20 @@
                         </div>
                         <button className="bg-white text-slate-900 px-6 py-2 rounded font-bold hover:bg-gray-200 transition">Continuar Aula</button>
                     </div>
+                </div>
+
+                {/* RESTAURADO: Grade de Cursos Recomendados */}
+                <h3 className="font-orbitron text-xl mt-8 mb-4 border-l-4 border-afro-primary pl-3 text-white">Cursos Recomendados para Você</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[1,2,3].map(i => (
+                        <div key={i} className="glass p-4 rounded-lg hover:bg-white/5 transition cursor-pointer border border-white/5 hover:border-afro-primary/30">
+                            <div className="h-32 bg-slate-700 rounded mb-3 overflow-hidden">
+                                <img src={`https://picsum.photos/400/300?random=${i+10}`} className="w-full h-full object-cover transform hover:scale-105 transition duration-500" alt="Course Thumbnail" />
+                            </div>
+                            <h4 className="font-bold text-sm text-white">Desenvolvimento Web3 {i}</h4>
+                            <p className="text-xs text-gray-400 mt-1">Por Afrokódico Academy</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         );
@@ -396,7 +435,6 @@
                 setPosts(posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
             };
 
-            // Filtragem Segura
             const filteredPosts = posts.filter(p => {
                 const title = p.title ? p.title.toLowerCase() : "";
                 const category = p.category ? p.category.toLowerCase() : "";
@@ -446,7 +484,8 @@
                         {activeTab === 'feed' && (
                             <div className="animate-fade-in">
                                 <div className="flex gap-4 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-                                    {['Live', 'Tech', 'Music'].map((story, i) => (
+                                    {/* RESTAURADO: Lista completa de Stories */}
+                                    {['Live', 'Tech', 'Music', 'Art', 'Crypto'].map((story, i) => (
                                         <div key={i} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
                                             <div className={`w-16 h-16 rounded-full p-[2px] ${i === 0 ? 'bg-red-500 animate-pulse' : 'bg-gradient-to-tr from-afro-primary to-afro-accent group-hover:scale-105 transition-transform'}`}>
                                                 <div className="w-full h-full bg-slate-900 rounded-full border-2 border-slate-900 overflow-hidden">
@@ -469,11 +508,21 @@
                                             <h4 className="font-bold mb-4 text-afro-secondary flex items-center gap-2">
                                                 <i className="fas fa-hashtag"></i> Tendências
                                             </h4>
-                                            {['#AfroFuturismo', '#ReactJS', '#AngolaTech'].map(tag => (
+                                            {/* RESTAURADO: Lista completa de tags */}
+                                            {['#AfroFuturismo', '#ReactJS', '#AngolaTech', '#Web3Music'].map(tag => (
                                                 <div key={tag} className="flex justify-between items-center py-3 border-b border-white/5 last:border-0 hover:bg-white/5 px-2 -mx-2 rounded transition cursor-pointer">
                                                     <span className="text-sm text-gray-300 font-medium">{tag}</span>
+                                                    <span className="text-xs text-gray-500">2k posts</span>
                                                 </div>
                                             ))}
+                                        </div>
+                                        
+                                        <div className="bg-gradient-to-br from-purple-900 to-indigo-900 p-5 rounded-xl text-center relative overflow-hidden group cursor-pointer border border-purple-700/50 shadow-lg">
+                                            <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition"></div>
+                                            <span className="text-[10px] uppercase tracking-widest text-white/50 mb-2 block font-bold">Patrocinado</span>
+                                            <h4 className="font-bold text-lg mb-2 text-white">Afrokódico Cloud</h4>
+                                            <p className="text-xs text-gray-300 mb-4 leading-relaxed">Hospedagem descentralizada para seus vídeos.</p>
+                                            <button className="bg-white text-purple-900 text-xs font-bold px-5 py-2 rounded-full hover:bg-purple-100 transition shadow-lg">Conhecer</button>
                                         </div>
                                     </div>
                                 </div>

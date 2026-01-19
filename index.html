@@ -3,7 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO: Título e Descrição -->
+  <meta name="description" content="Galeria multimédia com vídeos e imagens de diversas redes sociais como YouTube, Facebook, Instagram e TikTok. Faça upload de conteúdo e explore vídeos e imagens por categorias.">
+  <meta name="keywords" content="galeria, vídeos, imagens, upload, redes sociais, YouTube, Facebook, Instagram, TikTok">
+  <meta name="robots" content="index, follow">
+  
+  <!-- SEO: Open Graph para redes sociais -->
+  <meta property="og:title" content="Galeria Multimédia – Site de Prática">
+  <meta property="og:description" content="Explore vídeos e imagens de diversas redes sociais e faça upload de seu próprio conteúdo.">
+  <meta property="og:image" content="https://via.placeholder.com/1920x250?text=Imagem+Capa+do+Site">
+  <meta property="og:url" content="https://www.seusite.com">
+
+  <!-- SEO: Twitter Card -->
+  <meta name="twitter:title" content="Galeria Multimédia – Site de Prática">
+  <meta name="twitter:description" content="Explore vídeos e imagens de diversas redes sociais e faça upload de seu próprio conteúdo.">
+  <meta name="twitter:image" content="https://via.placeholder.com/1920x250?text=Imagem+Capa+do+Site">
+  <meta name="twitter:card" content="summary_large_image">
+  
   <title>Galeria Multimédia – Prática</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://via.placeholder.com/32" type="image/png">
 
   <style>
     * {
@@ -75,19 +96,28 @@
         display: none;
         flex-direction: column;
         width: 100%;
+        padding: 10px 0;
+      }
+
+      nav ul.active {
+        display: flex;
       }
 
       .menu-icon {
         display: block;
+        font-size: 30px;
+        color: #ecf0f1;
+        cursor: pointer;
       }
 
       nav ul li {
         text-align: center;
         width: 100%;
+        padding: 10px;
       }
 
-      nav ul.active {
-        display: flex;
+      nav ul li a {
+        padding: 15px;
       }
     }
 
@@ -190,6 +220,7 @@
 
 <body>
 
+  <!-- Imagem de Capa -->
   <img src="https://via.placeholder.com/1920x250?text=Imagem+Capa+do+Site" class="cover-image" alt="Imagem de Capa">
 
   <!-- Menu Hambúrguer -->

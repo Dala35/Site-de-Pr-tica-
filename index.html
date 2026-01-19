@@ -3,333 +3,577 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Plataforma multifuncional Afrokódica: Redes Sociais, Educação e IA.">
+  <title>Afrokódico Nexus - Plataforma Futurista</title>
   
-  <!-- SEO: Título e Descrição -->
-  <meta name="description" content="Galeria multimédia com vídeos e imagens de diversas redes sociais como YouTube, Facebook, Instagram e TikTok. Faça upload de conteúdo e explore vídeos e imagens por categorias.">
-  <meta name="keywords" content="galeria, vídeos, imagens, upload, redes sociais, YouTube, Facebook, Instagram, TikTok">
-  <meta name="robots" content="index, follow">
-  
-  <!-- SEO: Open Graph para redes sociais -->
-  <meta property="og:title" content="Galeria Multimédia – Site de Prática">
-  <meta property="og:description" content="Explore vídeos e imagens de diversas redes sociais e faça upload de seu próprio conteúdo.">
-  <meta property="og:image" content="https://via.placeholder.com/1920x250?text=Imagem+Capa+do+Site">
-  <meta property="og:url" content="https://www.seusite.com">
-
-  <!-- SEO: Twitter Card -->
-  <meta name="twitter:title" content="Galeria Multimédia – Site de Prática">
-  <meta name="twitter:description" content="Explore vídeos e imagens de diversas redes sociais e faça upload de seu próprio conteúdo.">
-  <meta name="twitter:image" content="https://via.placeholder.com/1920x250?text=Imagem+Capa+do+Site">
-  <meta name="twitter:card" content="summary_large_image">
-  
-  <title>Galeria Multimédia – Prática</title>
-
-  <!-- Favicon -->
-  <link rel="icon" href="https://via.placeholder.com/32" type="image/png">
+  <!-- Fontes e Ícones -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    /* --- Variáveis e Reset --- */
+    :root {
+      --primary-color: #00d2ff;
+      --secondary-color: #3a7bd5;
+      --accent-color: #ff0055;
+      --bg-color: #0f172a;
+      --text-color: #e2e8f0;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+      --sidebar-width: 320px;
     }
 
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f4f6f9;
-      line-height: 1.6;
-      color: #333;
-      margin-bottom: 100px;
+    [data-theme="light"] {
+      --bg-color: #f4f6f9;
+      --text-color: #1e293b;
+      --card-bg: rgba(255, 255, 255, 0.8);
+      --primary-color: #2563eb;
     }
 
-    h1, h2 {
-      font-family: 'Segoe UI', sans-serif;
-      color: #2c3e50;
-      text-align: center;
-      margin-bottom: 20px;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body { 
+      font-family: 'Roboto', sans-serif; 
+      background-color: var(--bg-color); 
+      color: var(--text-color);
+      transition: background-color 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
     }
 
-    /* Capa de imagem */
-    .cover-image {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
+    h1, h2, h3, .brand { font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
+
+    /* --- Utilitários de Vidro (Glassmorphism) --- */
+    .glass {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: var(--glass-border);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     }
 
-    /* Menu Hambúrguer */
-    .menu-icon {
-      display: none;
-      cursor: pointer;
-      font-size: 30px;
-      color: #333;
-    }
-
+    /* --- Navbar --- */
     nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
       justify-content: space-between;
-      padding: 10px 20px;
-      background-color: #2c3e50;
+      align-items: center;
+      padding: 15px 30px;
+      transition: all 0.3s;
     }
 
-    nav ul {
-      display: flex;
-      list-style-type: none;
-    }
-
-    nav ul li {
+    .brand { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; text-shadow: 0 0 10px rgba(0, 210, 255, 0.5); }
+    
+    .menu-trigger {
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-color);
+      transition: transform 0.3s;
       padding: 10px;
+      border-radius: 50%;
+    }
+    .menu-trigger:hover { background: rgba(255,255,255,0.1); transform: rotate(90deg); }
+
+    /* --- Sidebar (O Menu Poderoso) --- */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -100%; /* Escondido por padrão */
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: var(--bg-color);
+      border-left: var(--glass-border);
+      z-index: 200;
+      transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
     }
 
-    nav ul li a {
-      color: #ecf0f1;
-      text-decoration: none;
-      padding: 5px 15px;
+    .sidebar.active { right: 0; }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 15px;
     }
 
-    nav ul li a:hover {
-      background-color: #3498db;
-      border-radius: 5px;
+    .close-btn { font-size: 24px; cursor: pointer; color: var(--accent-color); }
+
+    /* Elementos do Sidebar */
+    .user-profile {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .avatar {
+      width: 80px; height: 80px; border-radius: 50%; 
+      border: 2px solid var(--primary-color);
+      margin-bottom: 10px;
+      object-fit: cover;
+    }
+    .level-badge {
+      background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
     }
 
-    /* Menu hambúrguer responsivo */
-    @media (max-width: 768px) {
-      nav ul {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        padding: 10px 0;
-      }
+    .sidebar-menu { list-style: none; }
+    .sidebar-menu li { margin-bottom: 15px; }
+    .sidebar-menu button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      color: var(--text-color);
+      font-size: 1rem;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-menu button:hover { background: rgba(255,255,255,0.1); color: var(--primary-color); }
+    
+    .theme-toggles { display: flex; gap: 10px; margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .theme-btn { flex: 1; padding: 8px; border: 1px solid var(--text-color); background: transparent; color: var(--text-color); cursor: pointer; border-radius: 4px; }
 
-      nav ul.active {
-        display: flex;
-      }
-
-      .menu-icon {
-        display: block;
-        font-size: 30px;
-        color: #ecf0f1;
-        cursor: pointer;
-      }
-
-      nav ul li {
-        text-align: center;
-        width: 100%;
-        padding: 10px;
-      }
-
-      nav ul li a {
-        padding: 15px;
-      }
+    /* --- Conteúdo Principal --- */
+    .main-container {
+      max-width: 1200px;
+      margin: 80px auto;
+      padding: 0 20px;
     }
 
-    /* Grid responsivo */
-    .grid {
+    .hero-section {
+      text-align: center;
+      margin-bottom: 50px;
+      padding: 60px 20px;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Search Bar Futurista */
+    .search-wrapper {
+      position: relative;
+      max-width: 600px;
+      margin: 30px auto;
+    }
+    .search-wrapper input {
+      width: 100%;
+      padding: 15px 50px 15px 20px;
+      border-radius: 50px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: var(--text-color);
+      font-size: 1rem;
+      outline: none;
+      border: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    .search-wrapper input:focus { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
+    .search-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--primary-color); }
+
+    /* --- Tabs de Navegação --- */
+    .tabs { display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 10px 25px;
+      background: transparent;
+      border: 1px solid var(--secondary-color);
+      color: var(--text-color);
+      border-radius: 30px;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.3s;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+      color: #fff;
+    }
+
+    /* --- Grid de Conteúdo --- */
+    .content-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      padding: 20px;
+      gap: 25px;
+      display: none; /* Escondido por padrão, ativado via JS */
+      animation: fadeIn 0.5s ease;
     }
+    .content-grid.active { display: grid; }
 
     .card {
-      background: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
     }
-
-    .card:hover {
-      transform: scale(1.05);
+    .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+    
+    .card-header { position: relative; height: 180px; }
+    .card-header img { width: 100%; height: 100%; object-fit: cover; }
+    .card-badge { 
+      position: absolute; top: 10px; right: 10px; 
+      background: var(--accent-color); color: #fff; 
+      padding: 5px 10px; border-radius: 10px; font-size: 0.7rem; 
     }
+    .card-body { padding: 20px; }
+    .card-title { font-size: 1.1rem; margin-bottom: 10px; color: var(--primary-color); }
+    .card-actions { margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .btn-action { background: none; border: none; color: var(--text-color); cursor: pointer; font-size: 0.9rem; display: flex; gap: 5px; align-items: center; }
+    .btn-action:hover { color: var(--primary-color); }
 
-    iframe, video, img {
-      width: 100%;
-      height: auto;
-      border-radius: 6px;
-    }
-
-    button {
-      background-color: #3498db;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #2980b9;
-    }
-
-    /* Filtro de Pesquisa */
-    .search-bar {
-      width: 100%;
-      max-width: 600px;
-      margin: 20px auto;
-      display: flex;
-      justify-content: center;
-    }
-
-    .search-bar input {
-      width: 80%;
-      padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-
-    .category-select {
-      margin: 20px;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    /* Rodapé */
-    footer {
-      background-color: #2c3e50;
-      color: #ecf0f1;
-      padding: 20px;
+    /* --- Área de Upload --- */
+    .upload-zone {
+      border: 2px dashed var(--secondary-color);
+      border-radius: 20px;
+      padding: 50px;
       text-align: center;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 20px;
+    }
+    .upload-zone:hover { background: rgba(0, 210, 255, 0.05); }
+    .upload-icon { font-size: 3rem; color: var(--primary-color); margin-bottom: 15px; }
+
+    /* --- Footer --- */
+    footer {
+      margin-top: 80px;
+      padding: 40px 20px;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.5);
     }
 
-    footer a {
-      color: #ecf0f1;
-      text-decoration: none;
-      margin: 0 10px;
+    /* Overlay para o mobile quando o menu abre */
+    .overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); z-index: 150;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .overlay.active { opacity: 1; pointer-events: all; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* Lazy Loading */
-    .lazy {
-      display: block;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-    }
-
-    .lazy.loaded {
-      opacity: 1;
+    @media (max-width: 768px) {
+      .sidebar { width: 85%; }
+      .hero-section { padding: 40px 10px; }
     }
   </style>
 </head>
-
 <body>
 
-  <!-- Imagem de Capa -->
-  <img src="https://via.placeholder.com/1920x250?text=Imagem+Capa+do+Site" class="cover-image" alt="Imagem de Capa">
+  <!-- Overlay de Fundo -->
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-  <!-- Menu Hambúrguer -->
-  <nav>
-    <span class="menu-icon" onclick="toggleMenu()">☰</span>
-    <ul id="menu">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#media">Mídia</a></li>
-      <li><a href="#upload">Upload</a></li>
-      <li><a href="#contact">Contato</a></li>
-    </ul>
+  <!-- Barra de Navegação -->
+  <nav class="glass">
+    <div class="brand">Afrokódico<span style="color:#fff">Nexus</span></div>
+    <div class="menu-trigger" onclick="toggleMenu()">
+      <i class="fas fa-bars"></i>
+    </div>
   </nav>
 
-  <h1>Site de Prática – Imagens e Vídeos</h1>
+  <!-- Sidebar: O Centro de Comando -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3>Comando</h3>
+      <span class="close-btn" onclick="toggleMenu()">&times;</span>
+    </div>
 
-  <!-- Filtro de Pesquisa -->
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Pesquisar vídeos e imagens..." onkeyup="searchContent()">
+    <!-- Perfil do Usuário -->
+    <div class="user-profile">
+      <img src="https://via.placeholder.com/100x100?text=User+AI" alt="Avatar" class="avatar">
+      <h4>Visitante Criativo</h4>
+      <span class="level-badge">Nível 1: Iniciado</span>
+      <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.7;">Saldo: 0.00 AKC (AfroKoin)</p>
+    </div>
+
+    <!-- Opções Funcionais -->
+    <ul class="sidebar-menu">
+      <li><button onclick="showSection('profile')"><i class="fas fa-user-astronaut"></i> Perfil & Estatísticas</button></li>
+      <li><button onclick="showSection('monetization')"><i class="fas fa-wallet"></i> Monetização</button></li>
+      <li><button onclick="alert('Iniciando calibração de IA...')"><i class="fas fa-robot"></i> Assistente IA</button></li>
+      <li><button onclick="showSection('settings')"><i class="fas fa-cog"></i> Configurações do Sistema</button></li>
+    </ul>
+
+    <!-- Controle de Tema -->
+    <div class="theme-toggles">
+      <button class="theme-btn" onclick="setTheme('dark')" title="Modo Escuro"><i class="fas fa-moon"></i></button>
+      <button class="theme-btn" onclick="setTheme('light')" title="Modo Claro"><i class="fas fa-sun"></i></button>
+    </div>
+  </aside>
+
+  <!-- Conteúdo Principal -->
+  <div class="main-container">
+
+    <!-- Hero Section -->
+    <section class="hero-section glass">
+      <h1>Explore a Consciência Digital</h1>
+      <p style="margin-top: 10px; opacity: 0.8;">Compartilhe conhecimento, monetize sua arte e evolua com IA.</p>
+      
+      <div class="search-wrapper">
+        <input type="text" id="searchInput" placeholder="Pesquisar por tags, criadores ou conceitos..." onkeyup="filterContent()">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+    </section>
+
+    <!-- Botões de Abas -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('social', this)">Feed Social</button>
+      <button class="tab-btn" onclick="switchTab('edu', this)">Educação & IA</button>
+      <button class="tab-btn" onclick="switchTab('upload', this)">Upload Neural</button>
+    </div>
+
+    <!-- Aba 1: Feed Social -->
+    <div id="social" class="content-grid active">
+      <!-- Card 1 -->
+      <div class="card glass" data-category="tecnologia">
+        <div class="card-header">
+          <img src="https://via.placeholder.com/400x200/3a7bd5/ffffff?text=Tech+Review" alt="Tech">
+          <span class="card-badge">Tecnologia</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">O Futuro da IA Generativa</h3>
+          <p style="font-size: 0.9rem; opacity: 0.8;">Uma análise profunda sobre como algoritmos estão criando novas realidades.</p>
+          <div class="card-actions">
+            <button class="btn-action"><i class="far fa-heart"></i> 1.2k</button>
+            <button class="btn-action"><i class="fas fa-share-alt"></i> Share</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card glass" data-category="natureza">
+        <div class="card-header">
+          <img src="https://via.placeholder.com/400x200/2ecc71/ffffff?text=Eco+System" alt="Nature">
+          <span class="card-badge">Natureza</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Biomimética na Engenharia</h3>
+          <p style="font-size: 0.9rem; opacity: 0.8;">Como a natureza inspira as estruturas do amanhã.</p>
+          <div class="card-actions">
+            <button class="btn-action"><i class="far fa-heart"></i> 850</button>
+            <button class="btn-action"><i class="fas fa-share-alt"></i> Share</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card glass" data-category="musica">
+        <div class="card-header">
+          <img src="https://via.placeholder.com/400x200/9b59b6/ffffff?text=Sonic+Waves" alt="Music">
+          <span class="card-badge">Música</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Batidas Lofi Sintéticas</h3>
+          <p style="font-size: 0.9rem; opacity: 0.8;">Sessão de relaxamento com frequências geradas por código.</p>
+          <div class="card-actions">
+            <button class="btn-action"><i class="far fa-heart"></i> 3.4k</button>
+            <button class="btn-action"><i class="fas fa-share-alt"></i> Share</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aba 2: Educação -->
+    <div id="edu" class="content-grid">
+      <div class="card glass">
+        <div class="card-header">
+          <img src="https://via.placeholder.com/400x200/e67e22/ffffff?text=Code+Class" alt="Code">
+          <span class="card-badge">Curso</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Python para Ciência de Dados</h3>
+          <p style="font-size: 0.9rem; opacity: 0.8;">Módulo 1: Introdução às bibliotecas Pandas e NumPy.</p>
+          <div class="card-actions">
+            <button class="btn-action" style="color: var(--primary-color);">Iniciar Aula <i class="fas fa-play"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card glass">
+        <div class="card-header">
+          <img src="https://via.placeholder.com/400x200/e74c3c/ffffff?text=History+AI" alt="History">
+          <span class="card-badge">Interativo</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">História Africana Recriada</h3>
+          <p style="font-size: 0.9rem; opacity: 0.8;">Explore impérios antigos reconstruídos em 3D.</p>
+          <div class="card-actions">
+            <button class="btn-action" style="color: var(--primary-color);">Explorar <i class="fas fa-vr-cardboard"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aba 3: Upload -->
+    <div id="upload" class="glass" style="display: none; padding: 40px; border-radius: 20px;">
+      <h2 style="text-align: center; color: var(--primary-color);">Transferência de Dados</h2>
+      <p style="text-align: center; margin-bottom: 20px;">Carregue vídeos, imagens ou modelos 3D para a rede.</p>
+      
+      <form id="uploadForm" onsubmit="handleUpload(event)">
+        <div class="upload-zone" id="dropZone">
+          <i class="fas fa-cloud-upload-alt upload-icon"></i>
+          <h3>Arraste arquivos aqui ou clique para selecionar</h3>
+          <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">Suporta MP4, JPG, PNG, GLB (Max 500MB)</p>
+          <input type="file" id="fileInput" multiple hidden>
+        </div>
+        
+        <div id="filePreview" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
+
+        <button type="submit" style="
+          margin-top: 20px;
+          width: 100%;
+          padding: 15px;
+          background: var(--primary-color);
+          border: none;
+          color: white;
+          font-weight: bold;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 1rem;">
+          Iniciar Upload
+        </button>
+      </form>
+    </div>
+
   </div>
 
-  <!-- Filtro de Categorias -->
-  <div class="category-select">
-    <select id="categorySelect" onchange="filterByCategory()">
-      <option value="">Escolher Categoria</option>
-      <option value="Natureza">Natureza</option>
-      <option value="Tecnologia">Tecnologia</option>
-      <option value="Música">Música</option>
-    </select>
-  </div>
-
-  <!-- Vídeos de Redes Sociais -->
-  <h2>Vídeos de Redes Sociais</h2>
-  <div class="grid" id="mediaGrid">
-    <!-- Exemplo de Vídeos -->
-    <div class="card" data-title="Vídeo Facebook" data-category="Natureza">
-      <iframe src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/facebook/videos/10153231379946729/" height="315" frameborder="0" allowfullscreen></iframe>
-    </div>
-
-    <div class="card" data-title="Vídeo Instagram" data-category="Tecnologia">
-      <iframe src="https://www.instagram.com/p/CI-VZq4KZ9C/embed" height="400" frameborder="0"></iframe>
-    </div>
-
-    <div class="card" data-title="Vídeo TikTok" data-category="Música">
-      <iframe src="https://www.tiktok.com/embed/6896350487012405766" height="400" frameborder="0" allowfullscreen></iframe>
-    </div>
-
-    <div class="card" data-title="Vídeo YouTube" data-category="Tecnologia">
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" height="315" frameborder="0" allowfullscreen></iframe>
-    </div>
-  </div>
-
-  <!-- Carregar Imagens e Vídeos -->
-  <h2>Carregar Imagens e Vídeos</h2>
-  <form action="upload.php" method="POST" enctype="multipart/form-data">
-    <input type="file" name="fileToUpload[]" accept="image/*,video/*" multiple>
-    <button type="submit">Enviar Arquivos</button>
-  </form>
-
+  <!-- Rodapé -->
   <footer>
-    <p>Desenvolvido por <strong>Dala De Carvalho</strong> | Afrokódico Engene</p>
-    <p><a href="mailto:dala@afrokodico.com">Contato</a> | <a href="https://www.afrokodico.com" target="_blank">Visite nosso site</a></p>
+    <p>Desenvolvido por <strong>Dala De Carvalho</strong> | Afrokódico Engine v2.5</p>
+    <p style="margin-top: 10px;">
+      <a href="#" style="color: var(--primary-color); text-decoration: none;">Privacidade</a> | 
+      <a href="#" style="color: var(--primary-color); text-decoration: none;">Termos de Evolução</a>
+    </p>
   </footer>
 
   <script>
-    // Função para pesquisar conteúdo (vídeos e imagens)
-    function searchContent() {
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-      const cards = document.querySelectorAll('.card');
-      
-      cards.forEach(card => {
-        const title = card.getAttribute('data-title').toLowerCase();
-        if (title.includes(searchTerm)) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    // Filtrar conteúdo por categoria
-    function filterByCategory() {
-      const category = document.getElementById('categorySelect').value.toLowerCase();
-      const cards = document.querySelectorAll('.card');
-      
-      cards.forEach(card => {
-        const cardCategory = card.getAttribute('data-category').toLowerCase();
-        if (category === '' || cardCategory.includes(category)) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    // Menu hambúrguer
+    // --- Lógica do Menu Lateral ---
     function toggleMenu() {
-      const menu = document.getElementById('menu');
-      menu.classList.toggle('active');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      
+      if (sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      } else {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+      }
     }
 
-    // Lazy loading de imagens
-    window.addEventListener("load", function () {
-      const lazyImages = document.querySelectorAll(".lazy");
-      lazyImages.forEach(img => {
-        img.src = img.getAttribute("data-src");
-        img.onload = () => img.classList.add("loaded");
+    // --- Controle de Abas (Tabs) ---
+    function switchTab(tabId, btnElement) {
+      // Esconde todos os containers
+      document.querySelectorAll('.content-grid, #upload').forEach(el => {
+        el.style.display = 'none';
+        el.classList.remove('active');
+      });
+
+      // Remove active dos botões
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      // Mostra o container selecionado
+      const selected = document.getElementById(tabId);
+      if(tabId === 'social' || tabId === 'edu') {
+        selected.style.display = 'grid'; // Grid para conteúdos
+        selected.classList.add('active');
+      } else {
+        selected.style.display = 'block'; // Block para formulários
+      }
+
+      // Ativa o botão
+      btnElement.classList.add('active');
+    }
+
+    // --- Sistema de Tema ---
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      // Salvar preferência no LocalStorage poderia ser implementado aqui
+    }
+
+    // --- Simulação de Busca ---
+    function filterContent() {
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+
+      cards.forEach(card => {
+        const title = card.querySelector('.card-title').textContent.toLowerCase();
+        const badge = card.querySelector('.card-badge').textContent.toLowerCase();
+        
+        if (title.includes(term) || badge.includes(term)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // --- Simulação de Upload (Interativo) ---
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+      const files = e.target.files;
+      const previewContainer = document.getElementById('filePreview');
+      previewContainer.innerHTML = ''; // Limpa preview anterior
+
+      Array.from(files).forEach(file => {
+        const div = document.createElement('div');
+        div.style.background = 'rgba(255,255,255,0.1)';
+        div.style.padding = '10px';
+        div.style.borderRadius = '5px';
+        div.innerHTML = `<i class="fas fa-check-circle" style="color: var(--primary-color)"></i> ${file.name}`;
+        previewContainer.appendChild(div);
       });
     });
-  </script>
 
+    function handleUpload(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const originalText = btn.innerText;
+      
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando Blocos de Dados...';
+      
+      setTimeout(() => {
+        alert('Upload Concluído! Seus arquivos foram integrados à rede.');
+        btn.innerText = originalText;
+        document.getElementById('filePreview').innerHTML = '';
+        document.getElementById('uploadForm').reset();
+      }, 2000);
+    }
+
+    // --- Funções do Menu Lateral ---
+    function showSection(section) {
+      toggleMenu(); // Fecha o menu
+      if(section === 'monetization') {
+        alert('Acesso à Carteira Digital: \nSaldo atual: 0.00 AKC \nConecte sua carteira para retirar.');
+      } else if (section === 'profile') {
+        alert('Redirecionando para o perfil de Dala De Carvalho...');
+      } else {
+        alert('Configurações salvas na nuvem neural.');
+      }
+    }
+
+  </script>
 </body>
 </html>
+

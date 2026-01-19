@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Afrokódico Nexus - Plataforma Social & Educacional</title>
     
-    <!-- Bibliotecas Essenciais (React, Babel, Tailwind, FontAwesome) -->
+    <!-- Bibliotecas Essenciais -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Configuração do Tailwind para Cores Futuristas -->
+    <!-- Fontes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Configuração do Tailwind -->
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -36,62 +38,153 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Estilos Globais e Glassmorphism */
-        body { font-family: 'Roboto', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        /* Estilos Globais */
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); 
+            color: #e2e8f0; 
+            margin: 0; 
+            padding: 0;
+            min-height: 100vh;
+        }
+        
         .glass {
             background: rgba(30, 41, 59, 0.6);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+        
         .neon-text { text-shadow: 0 0 10px rgba(0, 210, 255, 0.5); }
-        /* Animações */
+        
         @keyframes pulse-glow {
             0%, 100% { box-shadow: 0 0 15px rgba(0, 210, 255, 0.2); }
             50% { box-shadow: 0 0 25px rgba(0, 210, 255, 0.5); }
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .animate-ai { animation: pulse-glow 2s infinite; }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Loading Screen */
+        #loading-msg {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #00d2ff;
+            font-family: 'Orbitron', sans-serif;
+            flex-direction: column;
+            gap: 1rem;
+        }
     </style>
 </head>
 <body>
 
-    <div id="root"></div>
+    <div id="root">
+        <div id="loading-msg">
+            <i class="fas fa-circle-notch fa-spin fa-3x"></i>
+            <p>Sincronizando Nexus...</p>
+        </div>
+    </div>
+
+    <!-- Script de Proteção contra Erros -->
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error("Erro Detectado:", message);
+            const root = document.getElementById('root');
+            if (root) {
+                root.innerHTML = `
+                    <div style="padding: 20px; color: #ff9999; background: #1a1a2e; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                        <h2 style="font-family: 'Orbitron', sans-serif; font-size: 24px; margin-bottom: 15px; color: #ff5555;">Diagnóstico de Erro</h2>
+                        <p style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; font-family: monospace;">${message}</p>
+                        <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #00d2ff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Reiniciar Sistema</button>
+                    </div>
+                `;
+            }
+        };
+    </script>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- DADOS MOCADOS (Simulando Banco de Dados/API) ---
+        // --- DADOS INICIAIS CORRIGIDOS ---
+        // CORREÇÃO CRÍTICA: Adicionado 'comments: []' ao terceiro item para evitar crash no .length
         const initialPosts = [
-            { id: 1, user: "DalaDev", avatar: "https://i.pravatar.cc/150?img=11", type: "video", content: "https://www.w3schools.com/html/mov_bbb.mp4", title: "O Futuro da IA na África", category: "Tecnologia", likes: 120, comments: [], isLive: false },
-            { id: 2, user: "AfroArtist", avatar: "https://i.pravatar.cc/150?img=5", type: "image", content: "https://images.unsplash.com/photo-1614730341194-75c60740a2d3?auto=format&fit=crop&w=800&q=80", title: "Arte Generativa #04", category: "Arte", likes: 45, comments: [], isLive: false },
-            { id: 3, user: "CodeMaster", avatar: "https://i.pravatar.cc/150?img=3", type: "live", content: "poster", title: "🔴 AULA AO VIVO: React Native", category: "Educação", viewers: 1542, isLive: true }
+            { 
+                id: 1, 
+                user: "DalaDev", 
+                avatar: "https://i.pravatar.cc/150?img=11", 
+                type: "video", 
+                content: "https://www.w3schools.com/html/mov_bbb.mp4", 
+                title: "O Futuro da IA na África", 
+                category: "Tecnologia", 
+                likes: 120, 
+                comments: [], // Array existe
+                isLive: false 
+            },
+            { 
+                id: 2, 
+                user: "AfroArtist", 
+                avatar: "https://i.pravatar.cc/150?img=5", 
+                type: "image", 
+                content: "https://picsum.photos/800/600?random=1", 
+                title: "Arte Generativa #04", 
+                category: "Arte", 
+                likes: 45, 
+                comments: [], // Array existe
+                isLive: false 
+            },
+            { 
+                id: 3, 
+                user: "CodeMaster", 
+                avatar: "https://i.pravatar.cc/150?img=3", 
+                type: "live", 
+                content: "poster", 
+                title: "🔴 AULA AO VIVO: React Native", 
+                category: "Educação", 
+                viewers: 1542, 
+                comments: [], // CORREÇÃO: Adicionado campo faltante que causava o erro
+                likes: 890,
+                isLive: true 
+            }
         ];
 
         // --- COMPONENTES ---
 
-        // 1. Sidebar / Menu Hambúrguer Expandido (Navegação Principal)
+        const MenuButton = ({ icon, label, active, onClick, isLive }) => (
+            <button onClick={onClick} className={`w-full text-left p-3 rounded-lg flex items-center transition-all ${active ? 'bg-afro-primary/20 text-afro-primary border border-afro-primary/50' : 'hover:bg-white/5 text-gray-300'}`}>
+                <i className={`fas ${icon} w-8`}></i>
+                <span className="flex-1 font-medium">{label}</span>
+                {isLive && <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded animate-pulse font-bold">LIVE</span>}
+            </button>
+        );
+
         const Sidebar = ({ isOpen, toggle, activeTab, setTab, userStats }) => {
             return (
-                <div className={`fixed top-0 left-0 h-full w-80 bg-slate-900 border-r border-white/10 z-50 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                    <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                <div className={`fixed top-0 left-0 h-full w-80 bg-slate-900 border-r border-white/10 z-50 transform transition-transform duration-300 shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                    <div className="p-6 border-b border-white/10 flex justify-between items-center bg-slate-900">
                         <h2 className="text-2xl font-orbitron text-afro-primary neon-text">NEXUS</h2>
-                        <button onClick={toggle} className="text-white hover:text-afro-accent"><i className="fas fa-times text-xl"></i></button>
+                        <button onClick={toggle} className="text-white hover:text-afro-accent p-2"><i className="fas fa-times text-xl"></i></button>
                     </div>
                     
-                    {/* Perfil Miniatura no Menu */}
                     <div className="p-6 text-center border-b border-white/10 bg-slate-800/50">
                         <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-20 h-20 rounded-full mx-auto border-2 border-afro-primary mb-3" />
-                        <h3 className="font-bold text-white">Visitante Criativo</h3>
+                        <h3 className="font-bold text-white text-lg">Visitante Criativo</h3>
                         <div className="flex justify-center gap-2 mt-2 text-xs">
-                            <span className="bg-afro-secondary px-2 py-1 rounded">Lvl {userStats.level}</span>
+                            <span className="bg-afro-secondary px-2 py-1 rounded text-white font-bold">Lvl {userStats.level}</span>
                             <span className="bg-afro-gold text-slate-900 px-2 py-1 rounded font-bold">{userStats.coins} AKC</span>
                         </div>
                     </div>
 
-                    <nav className="p-4 space-y-2">
+                    <nav className="p-4 space-y-2 bg-slate-900 h-full">
                         <MenuButton icon="fa-home" label="Feed Social" active={activeTab === 'feed'} onClick={() => setTab('feed')} />
                         <MenuButton icon="fa-graduation-cap" label="Educação & IA" active={activeTab === 'edu'} onClick={() => setTab('edu')} />
                         <MenuButton icon="fa-cloud-upload-alt" label="Estúdio de Upload" active={activeTab === 'upload'} onClick={() => setTab('upload')} />
@@ -99,23 +192,14 @@
                         <MenuButton icon="fa-gem" label="Premium & Monetização" active={activeTab === 'premium'} onClick={() => setTab('premium')} />
                     </nav>
 
-                    <div className="absolute bottom-0 w-full p-4 border-t border-white/10 text-center text-xs text-gray-500">
-                        <p>Afrokódico Engine v3.0</p>
+                    <div className="absolute bottom-0 w-full p-4 border-t border-white/10 text-center text-xs text-gray-500 bg-slate-900">
+                        <p>Afrokódico Engine v3.3</p>
                         <p>Luanda, Angola</p>
                     </div>
                 </div>
             );
         };
 
-        const MenuButton = ({ icon, label, active, onClick, isLive }) => (
-            <button onClick={onClick} className={`w-full text-left p-3 rounded-lg flex items-center transition-all ${active ? 'bg-afro-primary/20 text-afro-primary border border-afro-primary/50' : 'hover:bg-white/5 text-gray-300'}`}>
-                <i className={`fas ${icon} w-8`}></i>
-                <span className="flex-1">{label}</span>
-                {isLive && <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded animate-pulse">LIVE</span>}
-            </button>
-        );
-
-        // 2. Componente de Upload com Simulação de IA (Machine Learning)
         const UploadStudio = ({ onUpload }) => {
             const [analyzing, setAnalyzing] = useState(false);
             const [file, setFile] = useState(null);
@@ -125,12 +209,11 @@
                 const selected = e.target.files[0];
                 if (selected) {
                     setFile(selected);
-                    // Simular IA analisando o conteúdo
                     setAnalyzing(true);
                     setTimeout(() => {
                         setAnalyzing(false);
                         setTags(['#Natureza', '#4K', '#AfroFuturismo', '#Detectado:Paisagem']);
-                    }, 2500);
+                    }, 2000);
                 }
             };
 
@@ -138,7 +221,6 @@
                 e.preventDefault();
                 if (!file) return;
                 
-                // Criar objeto de post simulado
                 const newPost = {
                     id: Date.now(),
                     user: "Visitante Criativo",
@@ -151,42 +233,36 @@
                     comments: []
                 };
                 onUpload(newPost);
-                alert("Conteúdo enviado, processado pela IA e publicado na Blockchain!");
+                alert("Conteúdo publicado com sucesso!");
                 setFile(null);
                 setTags([]);
             };
 
             return (
-                <div className="glass p-8 rounded-2xl max-w-2xl mx-auto mt-10 animate-fade-in">
-                    <h2 className="text-2xl font-orbitron mb-6 text-center text-afro-primary">Estúdio Neural de Upload</h2>
+                <div className="glass p-8 rounded-2xl max-w-2xl mx-auto mt-10 animate-fade-in border border-white/10">
+                    <h2 className="text-2xl font-orbitron mb-6 text-center text-afro-primary">Estúdio Neural</h2>
                     
-                    <div className="border-2 border-dashed border-gray-600 rounded-xl p-10 text-center hover:border-afro-primary transition-colors cursor-pointer relative">
+                    <div className="border-2 border-dashed border-gray-500 rounded-xl p-10 text-center hover:border-afro-primary transition-colors cursor-pointer relative bg-slate-800/50">
                         <input type="file" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*,video/*" />
                         <i className="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-4"></i>
-                        <p className="text-gray-300">Arraste arquivos ou clique para selecionar</p>
-                        <p className="text-xs text-gray-500 mt-2">Suporta RAW, MP4, GLB (Max 1GB para Premium)</p>
+                        <p className="text-gray-300 font-medium">Toque para selecionar arquivos</p>
                     </div>
 
                     {analyzing && (
-                        <div className="mt-6 flex items-center justify-center gap-3 text-afro-primary">
+                        <div className="mt-6 flex items-center justify-center gap-3 text-afro-primary font-bold">
                             <i className="fas fa-brain animate-pulse"></i>
-                            <span>IA Vision analisando conteúdo...</span>
+                            <span>IA Vision processando...</span>
                         </div>
                     )}
 
                     {!analyzing && file && (
-                        <div className="mt-6">
-                            <div className="bg-slate-800 p-4 rounded-lg flex items-center gap-4">
+                        <div className="mt-6 animate-fade-in">
+                            <div className="bg-slate-800 p-4 rounded-lg flex items-center gap-4 border border-white/5">
                                 <i className="fas fa-check-circle text-green-500"></i>
-                                <span className="text-sm truncate">{file.name}</span>
-                            </div>
-                            <div className="mt-3 flex flex-wrap gap-2">
-                                {tags.map((tag, i) => (
-                                    <span key={i} className="text-xs bg-afro-secondary/20 text-afro-secondary px-2 py-1 rounded border border-afro-secondary/50">{tag}</span>
-                                ))}
+                                <span className="text-sm truncate text-white">{file.name}</span>
                             </div>
                             <button onClick={handleSubmit} className="w-full mt-4 bg-gradient-to-r from-afro-secondary to-afro-primary text-slate-900 font-bold py-3 rounded-lg hover:opacity-90 transition">
-                                Publicar na Rede
+                                Publicar na Blockchain
                             </button>
                         </div>
                     )}
@@ -194,42 +270,53 @@
             );
         };
 
-        // 3. Feed Social e Card de Mídia
         const MediaCard = ({ post, onLike }) => {
+            // PROTEÇÃO: Garante que comments não seja undefined antes de ler .length
+            const commentsCount = (post.comments && post.comments.length) ? post.comments.length : 0;
+            const likesCount = post.likes || 0;
+
             return (
-                <div className="glass rounded-xl overflow-hidden mb-6 transition hover:transform hover:-translate-y-1 duration-300">
+                <div className="glass rounded-xl overflow-hidden mb-6 transition hover:bg-slate-800/40 duration-300 border border-white/5">
                     <div className="p-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <img src={post.avatar} className="w-10 h-10 rounded-full border border-afro-primary" />
+                            <img src={post.avatar} className="w-10 h-10 rounded-full border border-afro-primary" alt="Avatar" />
                             <div>
                                 <h4 className="font-bold text-sm text-white">{post.user}</h4>
-                                <span className="text-xs text-gray-400">2 min atrás • {post.category}</span>
+                                <span className="text-xs text-gray-400">Há 2 min • {post.category}</span>
                             </div>
                         </div>
-                        <button className="text-gray-400 hover:text-white"><i className="fas fa-ellipsis-v"></i></button>
+                        <button className="text-gray-400 hover:text-white p-2"><i className="fas fa-ellipsis-v"></i></button>
                     </div>
 
-                    <div className="w-full bg-black relative">
+                    <div className="w-full bg-black relative flex items-center justify-center bg-slate-900 min-h-[200px]">
                         {post.isLive ? (
-                            <div className="h-64 flex items-center justify-center bg-gray-900 relative">
-                                <span className="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded animate-pulse">AO VIVO</span>
+                            <div className="w-full h-64 flex items-center justify-center bg-gray-900 relative">
+                                <span className="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded animate-pulse z-10">AO VIVO</span>
                                 <i className="fas fa-play-circle text-6xl text-white/50"></i>
                             </div>
                         ) : post.type === 'video' ? (
-                            <video src={post.content} controls className="w-full h-64 object-cover"></video>
+                            <video src={post.content} controls className="w-full max-h-[500px] object-contain bg-black"></video>
                         ) : (
-                            <img src={post.content} className="w-full h-auto object-cover max-h-96" />
+                            <img 
+                                src={post.content} 
+                                className="w-full h-auto max-h-[500px] object-cover" 
+                                alt={post.title} 
+                                onError={(e) => {e.target.onerror = null; e.target.src="https://placehold.co/800x400?text=Imagem+Carregando";}} 
+                            />
                         )}
                     </div>
 
                     <div className="p-4">
                         <div className="flex justify-between items-center mb-3">
                             <div className="flex gap-4">
-                                <button onClick={() => onLike(post.id)} className="text-gray-300 hover:text-afro-accent transition flex items-center gap-2">
-                                    <i className={`${post.likes > 0 ? 'fas text-afro-accent' : 'far'} fa-heart`}></i> {post.likes}
+                                <button onClick={() => onLike(post.id)} className="text-gray-300 hover:text-afro-accent transition flex items-center gap-2 group">
+                                    <i className={`${likesCount > 0 ? 'fas text-afro-accent' : 'far'} fa-heart group-hover:scale-110 transition-transform`}></i> 
+                                    <span>{likesCount}</span>
                                 </button>
                                 <button className="text-gray-300 hover:text-afro-primary transition flex items-center gap-2">
-                                    <i className="far fa-comment"></i> {post.comments.length}
+                                    <i className="far fa-comment"></i> 
+                                    {/* CORREÇÃO: Usando a variável segura commentsCount */}
+                                    <span>{commentsCount}</span>
                                 </button>
                                 <button className="text-gray-300 hover:text-green-400 transition">
                                     <i className="fas fa-share-alt"></i>
@@ -239,159 +326,108 @@
                                 <i className="far fa-bookmark"></i>
                             </button>
                         </div>
-                        <h3 className="font-bold text-lg mb-1">{post.title}</h3>
-                        {post.isLive && <p className="text-sm text-red-400 font-bold">{post.viewers} assistindo agora</p>}
+                        <h3 className="font-bold text-lg mb-1 text-white">{post.title}</h3>
+                        {post.isLive && <p className="text-sm text-red-400 font-bold">{post.viewers} spectadores</p>}
                     </div>
                 </div>
             );
         };
 
-        // 4. Seção de Monetização e Premium
         const MonetizationHub = () => (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
-                {/* Carteira */}
-                <div className="glass p-6 rounded-xl md:col-span-3 flex justify-between items-center bg-gradient-to-r from-slate-900 to-slate-800">
-                    <div>
-                        <h3 className="text-gray-400 text-sm">Saldo Total Estimado</h3>
-                        <div className="text-3xl font-orbitron text-afro-gold mt-1">1,240.50 AKC</div>
-                        <div className="text-xs text-green-400 mt-1"><i className="fas fa-arrow-up"></i> +12% esta semana</div>
+                <div className="glass p-6 rounded-xl md:col-span-3 flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-slate-900 to-slate-800 border border-white/10">
+                    <div className="mb-4 md:mb-0 text-center md:text-left">
+                        <h3 className="text-gray-400 text-sm font-bold uppercase tracking-wider">Saldo na Carteira</h3>
+                        <div className="text-4xl font-orbitron text-afro-gold mt-1 drop-shadow-lg">1,240.50 AKC</div>
+                        <div className="text-xs text-green-400 mt-1 font-bold"><i className="fas fa-arrow-up"></i> +12% esta semana</div>
                     </div>
-                    <button className="bg-afro-primary text-slate-900 px-6 py-2 rounded-lg font-bold hover:bg-white transition">Sacar</button>
+                    <button className="bg-afro-primary text-slate-900 px-8 py-3 rounded-lg font-bold hover:bg-white transition shadow-lg shadow-afro-primary/30">
+                        <i className="fas fa-university mr-2"></i> Sacar Fundos
+                    </button>
                 </div>
 
-                {/* Planos */}
-                <div className="glass p-6 rounded-xl border-t-4 border-gray-500">
-                    <h3 className="text-xl font-bold mb-2">Criador Grátis</h3>
-                    <ul className="text-sm text-gray-400 space-y-2 mb-4">
-                        <li><i className="fas fa-check text-green-500 mr-2"></i> Uploads 720p</li>
-                        <li><i className="fas fa-check text-green-500 mr-2"></i> Anúncios no conteúdo</li>
-                        <li><i className="fas fa-check text-green-500 mr-2"></i> Taxa da plataforma: 30%</li>
-                    </ul>
-                    <button className="w-full py-2 border border-gray-500 rounded text-gray-300 cursor-not-allowed">Plano Atual</button>
-                </div>
-
-                <div className="glass p-6 rounded-xl border-t-4 border-afro-primary relative transform scale-105 shadow-2xl">
-                    <span className="absolute -top-3 right-4 bg-afro-primary text-slate-900 text-xs font-bold px-2 py-1 rounded">MAIS POPULAR</span>
+                <div className="glass p-6 rounded-xl border-t-4 border-afro-primary relative transform md:scale-105 shadow-2xl bg-slate-800">
+                    <span className="absolute -top-3 right-4 bg-afro-primary text-slate-900 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Melhor Escolha</span>
                     <h3 className="text-xl font-bold mb-2 text-white">Nexus Pro</h3>
-                    <ul className="text-sm text-gray-300 space-y-2 mb-4">
-                        <li><i className="fas fa-check text-afro-primary mr-2"></i> Uploads 4K & VR</li>
-                        <li><i className="fas fa-check text-afro-primary mr-2"></i> Sem anúncios</li>
-                        <li><i className="fas fa-check text-afro-primary mr-2"></i> Taxa da plataforma: 5%</li>
-                        <li><i className="fas fa-check text-afro-primary mr-2"></i> Badge de Verificado</li>
+                    <ul className="text-sm text-gray-300 space-y-3 mb-6">
+                        <li className="flex items-center"><i className="fas fa-check text-afro-primary mr-2"></i> Uploads 4K & VR</li>
+                        <li className="flex items-center"><i className="fas fa-check text-afro-primary mr-2"></i> Zero anúncios</li>
                     </ul>
-                    <button className="w-full py-2 bg-afro-primary text-slate-900 font-bold rounded hover:bg-white transition">Assinar (20 AKC/mês)</button>
-                </div>
-
-                <div className="glass p-6 rounded-xl border-t-4 border-afro-gold">
-                    <h3 className="text-xl font-bold mb-2 text-afro-gold">Partner</h3>
-                    <ul className="text-sm text-gray-400 space-y-2 mb-4">
-                        <li><i className="fas fa-check text-afro-gold mr-2"></i> Streaming ilimitado</li>
-                        <li><i className="fas fa-check text-afro-gold mr-2"></i> Monetização direta</li>
-                        <li><i className="fas fa-check text-afro-gold mr-2"></i> Suporte Dedicado</li>
-                    </ul>
-                    <button className="w-full py-2 border border-afro-gold text-afro-gold rounded hover:bg-afro-gold hover:text-slate-900 transition">Contatar Vendas</button>
+                    <button className="w-full py-3 bg-afro-primary text-slate-900 font-bold rounded hover:bg-white transition shadow-lg shadow-afro-primary/20">Assinar (20 AKC)</button>
                 </div>
             </div>
         );
 
-        // 5. Educação e Quizzes
         const EduSection = () => (
             <div className="space-y-6 animate-fade-in">
-                <div className="glass p-6 rounded-xl flex flex-col md:flex-row gap-6 items-center">
+                <div className="glass p-6 rounded-xl flex flex-col md:flex-row gap-6 items-center border border-white/10">
                     <div className="flex-1">
-                        <span className="bg-afro-secondary/20 text-afro-secondary text-xs px-2 py-1 rounded mb-2 inline-block">Machine Learning</span>
-                        <h2 className="text-2xl font-bold mb-2">Introdução à IA Generativa</h2>
-                        <p className="text-gray-400 text-sm mb-4">Aprenda a criar modelos de arte digital usando Python e TensorFlow. Curso completo com certificação na blockchain.</p>
-                        <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
-                            <div className="bg-afro-primary h-2 rounded-full" style={{width: '45%'}}></div>
+                        <span className="bg-afro-secondary/20 text-afro-secondary text-xs px-2 py-1 rounded mb-2 inline-block border border-afro-secondary/30 font-bold">Machine Learning</span>
+                        <h2 className="text-2xl font-bold mb-2 text-white">Introdução à IA Generativa</h2>
+                        <p className="text-gray-300 text-sm mb-4 leading-relaxed">Domine a criação de modelos digitais usando Python e TensorFlow.</p>
+                        <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
+                            <div className="bg-afro-primary h-2 rounded-full shadow-[0_0_10px_#00d2ff]" style={{width: '45%'}}></div>
                         </div>
-                        <p className="text-xs text-gray-500 mb-4">Progresso: 45%</p>
-                        <button className="bg-white text-slate-900 px-6 py-2 rounded font-bold hover:bg-gray-200">Continuar Aula</button>
+                        <button className="bg-white text-slate-900 px-6 py-2 rounded font-bold hover:bg-gray-200 transition">Continuar Aula</button>
                     </div>
-                    <div className="w-full md:w-1/3">
-                         <div className="aspect-video bg-black rounded-lg flex items-center justify-center cursor-pointer hover:opacity-80 transition relative">
-                            <i className="fas fa-play text-4xl text-white"></i>
-                         </div>
-                    </div>
-                </div>
-
-                <h3 className="font-orbitron text-xl mt-8 mb-4">Cursos Recomendados para Você</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {[1,2,3].map(i => (
-                        <div key={i} className="glass p-4 rounded-lg hover:bg-white/5 transition cursor-pointer">
-                            <div className="h-32 bg-slate-700 rounded mb-3 overflow-hidden">
-                                <img src={`https://source.unsplash.com/random/400x300?tech,code&sig=${i}`} className="w-full h-full object-cover" />
-                            </div>
-                            <h4 className="font-bold text-sm">Desenvolvimento Web3 {i}</h4>
-                            <p className="text-xs text-gray-400 mt-1">Por Afrokódico Academy</p>
-                        </div>
-                    ))}
                 </div>
             </div>
         );
 
-        // --- COMPONENTE PRINCIPAL (APP) ---
         const App = () => {
             const [sidebarOpen, setSidebarOpen] = useState(false);
             const [activeTab, setActiveTab] = useState('feed');
             const [posts, setPosts] = useState(initialPosts);
             const [searchTerm, setSearchTerm] = useState("");
             const [userStats, setUserStats] = useState({ level: 5, coins: 2500 });
+            const [isReady, setIsReady] = useState(false);
 
-            // Simulação de "Mount" para carregar dados
             useEffect(() => {
-                // Simula notificação de boas-vindas
-                setTimeout(() => console.log("Conectado à rede Afrokódica."), 1000);
+                setIsReady(true);
             }, []);
 
             const handleUpload = (newPost) => {
                 setPosts([newPost, ...posts]);
                 setActiveTab('feed');
-                setUserStats({ ...userStats, coins: userStats.coins + 50 }); // Ganha moedas ao postar
+                setUserStats({ ...userStats, coins: userStats.coins + 50 });
             };
 
             const handleLike = (id) => {
                 setPosts(posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
             };
 
-            // Filtragem de Posts
-            const filteredPosts = posts.filter(p => 
-                p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                p.category.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+            // Filtragem Segura
+            const filteredPosts = posts.filter(p => {
+                const title = p.title ? p.title.toLowerCase() : "";
+                const category = p.category ? p.category.toLowerCase() : "";
+                const search = searchTerm.toLowerCase();
+                return title.includes(search) || category.includes(search);
+            });
+
+            if (!isReady) return null;
 
             return (
-                <div className="min-h-screen bg-gradient-to-br from-slate-900 via-[#0f172a] to-[#1e1b4b]">
+                <div className="min-h-screen text-gray-100 pb-20 md:pb-0">
                     
-                    {/* Header Mobile/Desktop */}
-                    <header className="fixed top-0 w-full glass z-40 px-4 py-3 flex justify-between items-center shadow-lg">
+                    {/* Header */}
+                    <header className="fixed top-0 w-full glass z-40 px-4 py-3 flex justify-between items-center shadow-lg border-b border-white/10">
                         <div className="flex items-center gap-4">
-                            <button onClick={() => setSidebarOpen(true)} className="text-white text-xl hover:text-afro-primary transition">
+                            <button onClick={() => setSidebarOpen(true)} className="text-white text-xl hover:text-afro-primary transition p-2">
                                 <i className="fas fa-bars"></i>
                             </button>
-                            <h1 className="font-orbitron text-xl md:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-afro-primary to-afro-secondary hidden sm:block">
-                                AFROKÓDICO NEXUS
+                            <h1 className="font-orbitron text-xl md:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-afro-primary to-afro-secondary hidden sm:block font-bold">
+                                AFROKÓDICO
                             </h1>
                         </div>
-
-                        {/* Barra de Pesquisa */}
                         <div className="flex-1 max-w-md mx-4 relative">
                             <input 
                                 type="text" 
-                                placeholder="Pesquisar criadores, tags, vídeos..." 
-                                className="w-full bg-slate-800/50 border border-white/10 rounded-full py-2 px-10 text-sm text-white focus:outline-none focus:border-afro-primary transition"
+                                placeholder="Pesquisar..." 
+                                className="w-full bg-slate-800/50 border border-white/10 rounded-full py-2 px-10 text-sm text-white focus:outline-none focus:border-afro-primary focus:bg-slate-800 transition placeholder-gray-500"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                             <i className="fas fa-search absolute left-4 top-2.5 text-gray-400"></i>
-                        </div>
-
-                        <div className="flex items-center gap-4">
-                            <button className="relative text-gray-300 hover:text-white">
-                                <i className="far fa-bell text-xl"></i>
-                                <span className="absolute -top-1 -right-1 bg-red-500 w-2 h-2 rounded-full"></span>
-                            </button>
-                            <img src="https://i.pravatar.cc/150?img=11" className="w-8 h-8 rounded-full border border-afro-primary cursor-pointer" onClick={() => setActiveTab('premium')} />
                         </div>
                     </header>
 
@@ -402,62 +438,42 @@
                         setTab={(tab) => { setActiveTab(tab); setSidebarOpen(false); }}
                         userStats={userStats}
                     />
+                    
+                    {sidebarOpen && <div className="fixed inset-0 bg-black/80 z-40 backdrop-blur-sm transition-opacity" onClick={() => setSidebarOpen(false)}></div>}
 
-                    {/* Overlay para fechar sidebar */}
-                    {sidebarOpen && <div className="fixed inset-0 bg-black/80 z-40" onClick={() => setSidebarOpen(false)}></div>}
-
-                    {/* Área Principal de Conteúdo */}
-                    <main className="pt-24 pb-20 px-4 max-w-5xl mx-auto min-h-screen">
+                    <main className="pt-24 px-4 max-w-5xl mx-auto min-h-screen">
                         
                         {activeTab === 'feed' && (
                             <div className="animate-fade-in">
-                                {/* Histórias / Stories (Simulado) */}
                                 <div className="flex gap-4 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-                                    {['Live', 'Tech', 'Music', 'Art', 'Crypto'].map((story, i) => (
-                                        <div key={i} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer">
-                                            <div className={`w-16 h-16 rounded-full p-[2px] ${i === 0 ? 'bg-red-500 animate-pulse' : 'bg-gradient-to-tr from-afro-primary to-afro-accent'}`}>
+                                    {['Live', 'Tech', 'Music'].map((story, i) => (
+                                        <div key={i} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group">
+                                            <div className={`w-16 h-16 rounded-full p-[2px] ${i === 0 ? 'bg-red-500 animate-pulse' : 'bg-gradient-to-tr from-afro-primary to-afro-accent group-hover:scale-105 transition-transform'}`}>
                                                 <div className="w-full h-full bg-slate-900 rounded-full border-2 border-slate-900 overflow-hidden">
-                                                    <img src={`https://source.unsplash.com/random/100x100?sig=${i}`} className="w-full h-full object-cover" />
+                                                    <img src={`https://picsum.photos/100/100?random=${i+50}`} className="w-full h-full object-cover" />
                                                 </div>
                                             </div>
-                                            <span className="text-xs text-gray-300">{story}</span>
+                                            <span className="text-xs text-gray-300 font-medium">{story}</span>
                                         </div>
                                     ))}
                                 </div>
 
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                     <div className="lg:col-span-2">
-                                        <div className="mb-4 flex justify-between items-center text-sm text-gray-400">
-                                            <span>Mostrando {filteredPosts.length} resultados</span>
-                                            <div className="flex gap-2">
-                                                <button className="hover:text-white">Trending</button>
-                                                <button className="hover:text-white">Novo</button>
-                                            </div>
-                                        </div>
                                         {filteredPosts.map(post => (
                                             <MediaCard key={post.id} post={post} onLike={handleLike} />
                                         ))}
                                     </div>
-                                    
-                                    {/* Sidebar Direita (Recomendações/Ads) */}
                                     <div className="hidden lg:block space-y-6">
-                                        <div className="glass p-4 rounded-xl">
-                                            <h4 className="font-bold mb-3 text-afro-secondary">Tendências para Você</h4>
-                                            {['#AfroFuturismo', '#ReactJS', '#AngolaTech', '#Web3Music'].map(tag => (
-                                                <div key={tag} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
-                                                    <span className="text-sm text-gray-300">{tag}</span>
-                                                    <span className="text-xs text-gray-500">2k posts</span>
+                                        <div className="glass p-5 rounded-xl border border-white/5">
+                                            <h4 className="font-bold mb-4 text-afro-secondary flex items-center gap-2">
+                                                <i className="fas fa-hashtag"></i> Tendências
+                                            </h4>
+                                            {['#AfroFuturismo', '#ReactJS', '#AngolaTech'].map(tag => (
+                                                <div key={tag} className="flex justify-between items-center py-3 border-b border-white/5 last:border-0 hover:bg-white/5 px-2 -mx-2 rounded transition cursor-pointer">
+                                                    <span className="text-sm text-gray-300 font-medium">{tag}</span>
                                                 </div>
                                             ))}
-                                        </div>
-                                        
-                                        {/* Espaço de Anúncio Simulado */}
-                                        <div className="bg-gradient-to-br from-purple-900 to-indigo-900 p-4 rounded-xl text-center relative overflow-hidden group cursor-pointer">
-                                            <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition"></div>
-                                            <span className="text-[10px] uppercase tracking-widest text-white/50 mb-2 block">Patrocinado</span>
-                                            <h4 className="font-bold text-lg mb-2">Afrokódico Cloud</h4>
-                                            <p className="text-xs text-gray-300 mb-3">Hospedagem descentralizada para seus vídeos.</p>
-                                            <button className="bg-white text-purple-900 text-xs font-bold px-4 py-2 rounded-full">Saiba Mais</button>
                                         </div>
                                     </div>
                                 </div>
@@ -468,27 +484,21 @@
                         {activeTab === 'premium' && <MonetizationHub />}
                         {activeTab === 'edu' && <EduSection />}
                         {activeTab === 'live' && (
-                             <div className="text-center py-20 animate-fade-in">
-                                <div className="inline-block p-4 rounded-full bg-red-500/20 mb-4">
-                                    <i className="fas fa-satellite-dish text-4xl text-red-500 animate-pulse"></i>
-                                </div>
-                                <h2 className="text-2xl font-bold mb-2">Centro de Transmissão</h2>
-                                <p className="text-gray-400 mb-8">Conecte seu software de streaming (OBS) ou use a câmera do dispositivo.</p>
+                             <div className="text-center py-20 animate-fade-in glass rounded-2xl border border-white/10 mt-6">
+                                <h2 className="text-3xl font-bold mb-3 text-white">Estúdio de Transmissão</h2>
+                                <p className="text-gray-400 mb-8 max-w-md mx-auto">Sua audiência está esperando.</p>
                                 <button className="bg-red-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-red-700 transition shadow-lg shadow-red-500/30">
-                                    INICIAR STREAM
+                                    INICIAR AGORA
                                 </button>
                              </div>
                         )}
 
                     </main>
 
-                    {/* Bottom Nav para Mobile */}
-                    <nav className="fixed bottom-0 w-full glass border-t border-white/10 md:hidden flex justify-around p-3 z-40">
-                        <button onClick={() => setActiveTab('feed')} className={`text-xl ${activeTab === 'feed' ? 'text-afro-primary' : 'text-gray-500'}`}><i className="fas fa-home"></i></button>
-                        <button onClick={() => setActiveTab('edu')} className={`text-xl ${activeTab === 'edu' ? 'text-afro-primary' : 'text-gray-500'}`}><i className="fas fa-graduation-cap"></i></button>
-                        <button onClick={() => setActiveTab('upload')} className="bg-afro-primary text-slate-900 rounded-full w-12 h-12 flex items-center justify-center -mt-8 shadow-lg shadow-afro-primary/50"><i className="fas fa-plus"></i></button>
-                        <button onClick={() => setActiveTab('live')} className={`text-xl ${activeTab === 'live' ? 'text-red-500' : 'text-gray-500'}`}><i className="fas fa-video"></i></button>
-                        <button onClick={() => setActiveTab('premium')} className={`text-xl ${activeTab === 'premium' ? 'text-afro-primary' : 'text-gray-500'}`}><i className="fas fa-wallet"></i></button>
+                    <nav className="fixed bottom-0 w-full glass border-t border-white/10 md:hidden flex justify-around p-3 z-50 bg-slate-900/90 backdrop-blur-lg">
+                        <button onClick={() => setActiveTab('feed')} className={`text-xl p-2 rounded-lg transition ${activeTab === 'feed' ? 'text-afro-primary bg-white/5' : 'text-gray-500'}`}><i className="fas fa-home"></i></button>
+                        <button onClick={() => setActiveTab('upload')} className="bg-gradient-to-tr from-afro-primary to-afro-secondary text-slate-900 rounded-full w-14 h-14 flex items-center justify-center -mt-8 shadow-lg shadow-afro-primary/50 border-4 border-slate-900 transform active:scale-95 transition"><i className="fas fa-plus text-xl"></i></button>
+                        <button onClick={() => setActiveTab('premium')} className={`text-xl p-2 rounded-lg transition ${activeTab === 'premium' ? 'text-afro-primary bg-white/5' : 'text-gray-500'}`}><i className="fas fa-wallet"></i></button>
                     </nav>
 
                 </div>
@@ -500,5 +510,4 @@
     </script>
 </body>
 </html>
-
 

@@ -1,579 +1,504 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Plataforma multifuncional Afrokódica: Redes Sociais, Educação e IA.">
-  <title>Afrokódico Nexus - Plataforma Futurista</title>
-  
-  <!-- Fontes e Ícones -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <style>
-    /* --- Variáveis e Reset --- */
-    :root {
-      --primary-color: #00d2ff;
-      --secondary-color: #3a7bd5;
-      --accent-color: #ff0055;
-      --bg-color: #0f172a;
-      --text-color: #e2e8f0;
-      --card-bg: rgba(30, 41, 59, 0.7);
-      --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-      --sidebar-width: 320px;
-    }
-
-    [data-theme="light"] {
-      --bg-color: #f4f6f9;
-      --text-color: #1e293b;
-      --card-bg: rgba(255, 255, 255, 0.8);
-      --primary-color: #2563eb;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afrokódico Nexus - Plataforma Social & Educacional</title>
     
-    body { 
-      font-family: 'Roboto', sans-serif; 
-      background-color: var(--bg-color); 
-      color: var(--text-color);
-      transition: background-color 0.5s ease, color 0.5s ease;
-      overflow-x: hidden;
-    }
-
-    h1, h2, h3, .brand { font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
-
-    /* --- Utilitários de Vidro (Glassmorphism) --- */
-    .glass {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: var(--glass-border);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    /* --- Navbar --- */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-      transition: all 0.3s;
-    }
-
-    .brand { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; text-shadow: 0 0 10px rgba(0, 210, 255, 0.5); }
+    <!-- Bibliotecas Essenciais (React, Babel, Tailwind, FontAwesome) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    .menu-trigger {
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--text-color);
-      transition: transform 0.3s;
-      padding: 10px;
-      border-radius: 50%;
-    }
-    .menu-trigger:hover { background: rgba(255,255,255,0.1); transform: rotate(90deg); }
+    <!-- Configuração do Tailwind para Cores Futuristas -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        afro: {
+                            dark: '#0f172a',
+                            card: 'rgba(30, 41, 59, 0.7)',
+                            primary: '#00d2ff',
+                            secondary: '#3a7bd5',
+                            accent: '#ff0055',
+                            gold: '#ffd700'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        roboto: ['Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 
-    /* --- Sidebar (O Menu Poderoso) --- */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      right: -100%; /* Escondido por padrão */
-      width: var(--sidebar-width);
-      height: 100vh;
-      background: var(--bg-color);
-      border-left: var(--glass-border);
-      z-index: 200;
-      transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-    }
-
-    .sidebar.active { right: 0; }
-
-    .sidebar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding-bottom: 15px;
-    }
-
-    .close-btn { font-size: 24px; cursor: pointer; color: var(--accent-color); }
-
-    /* Elementos do Sidebar */
-    .user-profile {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .avatar {
-      width: 80px; height: 80px; border-radius: 50%; 
-      border: 2px solid var(--primary-color);
-      margin-bottom: 10px;
-      object-fit: cover;
-    }
-    .level-badge {
-      background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
-
-    .sidebar-menu { list-style: none; }
-    .sidebar-menu li { margin-bottom: 15px; }
-    .sidebar-menu button {
-      width: 100%;
-      text-align: left;
-      background: transparent;
-      border: none;
-      color: var(--text-color);
-      font-size: 1rem;
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: background 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .sidebar-menu button:hover { background: rgba(255,255,255,0.1); color: var(--primary-color); }
-    
-    .theme-toggles { display: flex; gap: 10px; margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-    .theme-btn { flex: 1; padding: 8px; border: 1px solid var(--text-color); background: transparent; color: var(--text-color); cursor: pointer; border-radius: 4px; }
-
-    /* --- Conteúdo Principal --- */
-    .main-container {
-      max-width: 1200px;
-      margin: 80px auto;
-      padding: 0 20px;
-    }
-
-    .hero-section {
-      text-align: center;
-      margin-bottom: 50px;
-      padding: 60px 20px;
-      border-radius: 20px;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    /* Search Bar Futurista */
-    .search-wrapper {
-      position: relative;
-      max-width: 600px;
-      margin: 30px auto;
-    }
-    .search-wrapper input {
-      width: 100%;
-      padding: 15px 50px 15px 20px;
-      border-radius: 50px;
-      border: none;
-      background: rgba(255,255,255,0.1);
-      color: var(--text-color);
-      font-size: 1rem;
-      outline: none;
-      border: 1px solid transparent;
-      transition: border-color 0.3s;
-    }
-    .search-wrapper input:focus { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
-    .search-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--primary-color); }
-
-    /* --- Tabs de Navegação --- */
-    .tabs { display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
-    .tab-btn {
-      padding: 10px 25px;
-      background: transparent;
-      border: 1px solid var(--secondary-color);
-      color: var(--text-color);
-      border-radius: 30px;
-      cursor: pointer;
-      font-family: 'Orbitron', sans-serif;
-      transition: all 0.3s;
-    }
-    .tab-btn.active, .tab-btn:hover {
-      background: var(--primary-color);
-      border-color: var(--primary-color);
-      box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
-      color: #fff;
-    }
-
-    /* --- Grid de Conteúdo --- */
-    .content-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
-      display: none; /* Escondido por padrão, ativado via JS */
-      animation: fadeIn 0.5s ease;
-    }
-    .content-grid.active { display: grid; }
-
-    .card {
-      border-radius: 15px;
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s;
-      position: relative;
-    }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-    
-    .card-header { position: relative; height: 180px; }
-    .card-header img { width: 100%; height: 100%; object-fit: cover; }
-    .card-badge { 
-      position: absolute; top: 10px; right: 10px; 
-      background: var(--accent-color); color: #fff; 
-      padding: 5px 10px; border-radius: 10px; font-size: 0.7rem; 
-    }
-    .card-body { padding: 20px; }
-    .card-title { font-size: 1.1rem; margin-bottom: 10px; color: var(--primary-color); }
-    .card-actions { margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
-    .btn-action { background: none; border: none; color: var(--text-color); cursor: pointer; font-size: 0.9rem; display: flex; gap: 5px; align-items: center; }
-    .btn-action:hover { color: var(--primary-color); }
-
-    /* --- Área de Upload --- */
-    .upload-zone {
-      border: 2px dashed var(--secondary-color);
-      border-radius: 20px;
-      padding: 50px;
-      text-align: center;
-      cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 20px;
-    }
-    .upload-zone:hover { background: rgba(0, 210, 255, 0.05); }
-    .upload-icon { font-size: 3rem; color: var(--primary-color); margin-bottom: 15px; }
-
-    /* --- Footer --- */
-    footer {
-      margin-top: 80px;
-      padding: 40px 20px;
-      text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.5);
-    }
-
-    /* Overlay para o mobile quando o menu abre */
-    .overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7); z-index: 150;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s;
-    }
-    .overlay.active { opacity: 1; pointer-events: all; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 768px) {
-      .sidebar { width: 85%; }
-      .hero-section { padding: 40px 10px; }
-    }
-  </style>
+    <style>
+        /* Estilos Globais e Glassmorphism */
+        body { font-family: 'Roboto', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .glass {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-text { text-shadow: 0 0 10px rgba(0, 210, 255, 0.5); }
+        /* Animações */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(0, 210, 255, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(0, 210, 255, 0.5); }
+        }
+        .animate-ai { animation: pulse-glow 2s infinite; }
+    </style>
 </head>
 <body>
 
-  <!-- Overlay de Fundo -->
-  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div id="root"></div>
 
-  <!-- Barra de Navegação -->
-  <nav class="glass">
-    <div class="brand">Afrokódico<span style="color:#fff">Nexus</span></div>
-    <div class="menu-trigger" onclick="toggleMenu()">
-      <i class="fas fa-bars"></i>
-    </div>
-  </nav>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
 
-  <!-- Sidebar: O Centro de Comando -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <h3>Comando</h3>
-      <span class="close-btn" onclick="toggleMenu()">&times;</span>
-    </div>
+        // --- DADOS MOCADOS (Simulando Banco de Dados/API) ---
+        const initialPosts = [
+            { id: 1, user: "DalaDev", avatar: "https://i.pravatar.cc/150?img=11", type: "video", content: "https://www.w3schools.com/html/mov_bbb.mp4", title: "O Futuro da IA na África", category: "Tecnologia", likes: 120, comments: [], isLive: false },
+            { id: 2, user: "AfroArtist", avatar: "https://i.pravatar.cc/150?img=5", type: "image", content: "https://images.unsplash.com/photo-1614730341194-75c60740a2d3?auto=format&fit=crop&w=800&q=80", title: "Arte Generativa #04", category: "Arte", likes: 45, comments: [], isLive: false },
+            { id: 3, user: "CodeMaster", avatar: "https://i.pravatar.cc/150?img=3", type: "live", content: "poster", title: "🔴 AULA AO VIVO: React Native", category: "Educação", viewers: 1542, isLive: true }
+        ];
 
-    <!-- Perfil do Usuário -->
-    <div class="user-profile">
-      <img src="https://via.placeholder.com/100x100?text=User+AI" alt="Avatar" class="avatar">
-      <h4>Visitante Criativo</h4>
-      <span class="level-badge">Nível 1: Iniciado</span>
-      <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.7;">Saldo: 0.00 AKC (AfroKoin)</p>
-    </div>
+        // --- COMPONENTES ---
 
-    <!-- Opções Funcionais -->
-    <ul class="sidebar-menu">
-      <li><button onclick="showSection('profile')"><i class="fas fa-user-astronaut"></i> Perfil & Estatísticas</button></li>
-      <li><button onclick="showSection('monetization')"><i class="fas fa-wallet"></i> Monetização</button></li>
-      <li><button onclick="alert('Iniciando calibração de IA...')"><i class="fas fa-robot"></i> Assistente IA</button></li>
-      <li><button onclick="showSection('settings')"><i class="fas fa-cog"></i> Configurações do Sistema</button></li>
-    </ul>
+        // 1. Sidebar / Menu Hambúrguer Expandido (Navegação Principal)
+        const Sidebar = ({ isOpen, toggle, activeTab, setTab, userStats }) => {
+            return (
+                <div className={`fixed top-0 left-0 h-full w-80 bg-slate-900 border-r border-white/10 z-50 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                    <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                        <h2 className="text-2xl font-orbitron text-afro-primary neon-text">NEXUS</h2>
+                        <button onClick={toggle} className="text-white hover:text-afro-accent"><i className="fas fa-times text-xl"></i></button>
+                    </div>
+                    
+                    {/* Perfil Miniatura no Menu */}
+                    <div className="p-6 text-center border-b border-white/10 bg-slate-800/50">
+                        <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-20 h-20 rounded-full mx-auto border-2 border-afro-primary mb-3" />
+                        <h3 className="font-bold text-white">Visitante Criativo</h3>
+                        <div className="flex justify-center gap-2 mt-2 text-xs">
+                            <span className="bg-afro-secondary px-2 py-1 rounded">Lvl {userStats.level}</span>
+                            <span className="bg-afro-gold text-slate-900 px-2 py-1 rounded font-bold">{userStats.coins} AKC</span>
+                        </div>
+                    </div>
 
-    <!-- Controle de Tema -->
-    <div class="theme-toggles">
-      <button class="theme-btn" onclick="setTheme('dark')" title="Modo Escuro"><i class="fas fa-moon"></i></button>
-      <button class="theme-btn" onclick="setTheme('light')" title="Modo Claro"><i class="fas fa-sun"></i></button>
-    </div>
-  </aside>
+                    <nav className="p-4 space-y-2">
+                        <MenuButton icon="fa-home" label="Feed Social" active={activeTab === 'feed'} onClick={() => setTab('feed')} />
+                        <MenuButton icon="fa-graduation-cap" label="Educação & IA" active={activeTab === 'edu'} onClick={() => setTab('edu')} />
+                        <MenuButton icon="fa-cloud-upload-alt" label="Estúdio de Upload" active={activeTab === 'upload'} onClick={() => setTab('upload')} />
+                        <MenuButton icon="fa-video" label="Live Streaming" active={activeTab === 'live'} onClick={() => setTab('live')} isLive={true} />
+                        <MenuButton icon="fa-gem" label="Premium & Monetização" active={activeTab === 'premium'} onClick={() => setTab('premium')} />
+                    </nav>
 
-  <!-- Conteúdo Principal -->
-  <div class="main-container">
+                    <div className="absolute bottom-0 w-full p-4 border-t border-white/10 text-center text-xs text-gray-500">
+                        <p>Afrokódico Engine v3.0</p>
+                        <p>Luanda, Angola</p>
+                    </div>
+                </div>
+            );
+        };
 
-    <!-- Hero Section -->
-    <section class="hero-section glass">
-      <h1>Explore a Consciência Digital</h1>
-      <p style="margin-top: 10px; opacity: 0.8;">Compartilhe conhecimento, monetize sua arte e evolua com IA.</p>
-      
-      <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="Pesquisar por tags, criadores ou conceitos..." onkeyup="filterContent()">
-        <i class="fas fa-search search-icon"></i>
-      </div>
-    </section>
+        const MenuButton = ({ icon, label, active, onClick, isLive }) => (
+            <button onClick={onClick} className={`w-full text-left p-3 rounded-lg flex items-center transition-all ${active ? 'bg-afro-primary/20 text-afro-primary border border-afro-primary/50' : 'hover:bg-white/5 text-gray-300'}`}>
+                <i className={`fas ${icon} w-8`}></i>
+                <span className="flex-1">{label}</span>
+                {isLive && <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded animate-pulse">LIVE</span>}
+            </button>
+        );
 
-    <!-- Botões de Abas -->
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('social', this)">Feed Social</button>
-      <button class="tab-btn" onclick="switchTab('edu', this)">Educação & IA</button>
-      <button class="tab-btn" onclick="switchTab('upload', this)">Upload Neural</button>
-    </div>
+        // 2. Componente de Upload com Simulação de IA (Machine Learning)
+        const UploadStudio = ({ onUpload }) => {
+            const [analyzing, setAnalyzing] = useState(false);
+            const [file, setFile] = useState(null);
+            const [tags, setTags] = useState([]);
 
-    <!-- Aba 1: Feed Social -->
-    <div id="social" class="content-grid active">
-      <!-- Card 1 -->
-      <div class="card glass" data-category="tecnologia">
-        <div class="card-header">
-          <img src="https://via.placeholder.com/400x200/3a7bd5/ffffff?text=Tech+Review" alt="Tech">
-          <span class="card-badge">Tecnologia</span>
-        </div>
-        <div class="card-body">
-          <h3 class="card-title">O Futuro da IA Generativa</h3>
-          <p style="font-size: 0.9rem; opacity: 0.8;">Uma análise profunda sobre como algoritmos estão criando novas realidades.</p>
-          <div class="card-actions">
-            <button class="btn-action"><i class="far fa-heart"></i> 1.2k</button>
-            <button class="btn-action"><i class="fas fa-share-alt"></i> Share</button>
-          </div>
-        </div>
-      </div>
+            const handleFileChange = (e) => {
+                const selected = e.target.files[0];
+                if (selected) {
+                    setFile(selected);
+                    // Simular IA analisando o conteúdo
+                    setAnalyzing(true);
+                    setTimeout(() => {
+                        setAnalyzing(false);
+                        setTags(['#Natureza', '#4K', '#AfroFuturismo', '#Detectado:Paisagem']);
+                    }, 2500);
+                }
+            };
 
-      <!-- Card 2 -->
-      <div class="card glass" data-category="natureza">
-        <div class="card-header">
-          <img src="https://via.placeholder.com/400x200/2ecc71/ffffff?text=Eco+System" alt="Nature">
-          <span class="card-badge">Natureza</span>
-        </div>
-        <div class="card-body">
-          <h3 class="card-title">Biomimética na Engenharia</h3>
-          <p style="font-size: 0.9rem; opacity: 0.8;">Como a natureza inspira as estruturas do amanhã.</p>
-          <div class="card-actions">
-            <button class="btn-action"><i class="far fa-heart"></i> 850</button>
-            <button class="btn-action"><i class="fas fa-share-alt"></i> Share</button>
-          </div>
-        </div>
-      </div>
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!file) return;
+                
+                // Criar objeto de post simulado
+                const newPost = {
+                    id: Date.now(),
+                    user: "Visitante Criativo",
+                    avatar: "https://i.pravatar.cc/150?img=11",
+                    type: file.type.includes('video') ? 'video' : 'image',
+                    content: URL.createObjectURL(file),
+                    title: "Novo Upload via Nexus",
+                    category: "Geral",
+                    likes: 0,
+                    comments: []
+                };
+                onUpload(newPost);
+                alert("Conteúdo enviado, processado pela IA e publicado na Blockchain!");
+                setFile(null);
+                setTags([]);
+            };
 
-      <!-- Card 3 -->
-      <div class="card glass" data-category="musica">
-        <div class="card-header">
-          <img src="https://via.placeholder.com/400x200/9b59b6/ffffff?text=Sonic+Waves" alt="Music">
-          <span class="card-badge">Música</span>
-        </div>
-        <div class="card-body">
-          <h3 class="card-title">Batidas Lofi Sintéticas</h3>
-          <p style="font-size: 0.9rem; opacity: 0.8;">Sessão de relaxamento com frequências geradas por código.</p>
-          <div class="card-actions">
-            <button class="btn-action"><i class="far fa-heart"></i> 3.4k</button>
-            <button class="btn-action"><i class="fas fa-share-alt"></i> Share</button>
-          </div>
-        </div>
-      </div>
-    </div>
+            return (
+                <div className="glass p-8 rounded-2xl max-w-2xl mx-auto mt-10 animate-fade-in">
+                    <h2 className="text-2xl font-orbitron mb-6 text-center text-afro-primary">Estúdio Neural de Upload</h2>
+                    
+                    <div className="border-2 border-dashed border-gray-600 rounded-xl p-10 text-center hover:border-afro-primary transition-colors cursor-pointer relative">
+                        <input type="file" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*,video/*" />
+                        <i className="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-4"></i>
+                        <p className="text-gray-300">Arraste arquivos ou clique para selecionar</p>
+                        <p className="text-xs text-gray-500 mt-2">Suporta RAW, MP4, GLB (Max 1GB para Premium)</p>
+                    </div>
 
-    <!-- Aba 2: Educação -->
-    <div id="edu" class="content-grid">
-      <div class="card glass">
-        <div class="card-header">
-          <img src="https://via.placeholder.com/400x200/e67e22/ffffff?text=Code+Class" alt="Code">
-          <span class="card-badge">Curso</span>
-        </div>
-        <div class="card-body">
-          <h3 class="card-title">Python para Ciência de Dados</h3>
-          <p style="font-size: 0.9rem; opacity: 0.8;">Módulo 1: Introdução às bibliotecas Pandas e NumPy.</p>
-          <div class="card-actions">
-            <button class="btn-action" style="color: var(--primary-color);">Iniciar Aula <i class="fas fa-play"></i></button>
-          </div>
-        </div>
-      </div>
+                    {analyzing && (
+                        <div className="mt-6 flex items-center justify-center gap-3 text-afro-primary">
+                            <i className="fas fa-brain animate-pulse"></i>
+                            <span>IA Vision analisando conteúdo...</span>
+                        </div>
+                    )}
 
-      <div class="card glass">
-        <div class="card-header">
-          <img src="https://via.placeholder.com/400x200/e74c3c/ffffff?text=History+AI" alt="History">
-          <span class="card-badge">Interativo</span>
-        </div>
-        <div class="card-body">
-          <h3 class="card-title">História Africana Recriada</h3>
-          <p style="font-size: 0.9rem; opacity: 0.8;">Explore impérios antigos reconstruídos em 3D.</p>
-          <div class="card-actions">
-            <button class="btn-action" style="color: var(--primary-color);">Explorar <i class="fas fa-vr-cardboard"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
+                    {!analyzing && file && (
+                        <div className="mt-6">
+                            <div className="bg-slate-800 p-4 rounded-lg flex items-center gap-4">
+                                <i className="fas fa-check-circle text-green-500"></i>
+                                <span className="text-sm truncate">{file.name}</span>
+                            </div>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                                {tags.map((tag, i) => (
+                                    <span key={i} className="text-xs bg-afro-secondary/20 text-afro-secondary px-2 py-1 rounded border border-afro-secondary/50">{tag}</span>
+                                ))}
+                            </div>
+                            <button onClick={handleSubmit} className="w-full mt-4 bg-gradient-to-r from-afro-secondary to-afro-primary text-slate-900 font-bold py-3 rounded-lg hover:opacity-90 transition">
+                                Publicar na Rede
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
 
-    <!-- Aba 3: Upload -->
-    <div id="upload" class="glass" style="display: none; padding: 40px; border-radius: 20px;">
-      <h2 style="text-align: center; color: var(--primary-color);">Transferência de Dados</h2>
-      <p style="text-align: center; margin-bottom: 20px;">Carregue vídeos, imagens ou modelos 3D para a rede.</p>
-      
-      <form id="uploadForm" onsubmit="handleUpload(event)">
-        <div class="upload-zone" id="dropZone">
-          <i class="fas fa-cloud-upload-alt upload-icon"></i>
-          <h3>Arraste arquivos aqui ou clique para selecionar</h3>
-          <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">Suporta MP4, JPG, PNG, GLB (Max 500MB)</p>
-          <input type="file" id="fileInput" multiple hidden>
-        </div>
-        
-        <div id="filePreview" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
+        // 3. Feed Social e Card de Mídia
+        const MediaCard = ({ post, onLike }) => {
+            return (
+                <div className="glass rounded-xl overflow-hidden mb-6 transition hover:transform hover:-translate-y-1 duration-300">
+                    <div className="p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <img src={post.avatar} className="w-10 h-10 rounded-full border border-afro-primary" />
+                            <div>
+                                <h4 className="font-bold text-sm text-white">{post.user}</h4>
+                                <span className="text-xs text-gray-400">2 min atrás • {post.category}</span>
+                            </div>
+                        </div>
+                        <button className="text-gray-400 hover:text-white"><i className="fas fa-ellipsis-v"></i></button>
+                    </div>
 
-        <button type="submit" style="
-          margin-top: 20px;
-          width: 100%;
-          padding: 15px;
-          background: var(--primary-color);
-          border: none;
-          color: white;
-          font-weight: bold;
-          border-radius: 8px;
-          cursor: pointer;
-          font-size: 1rem;">
-          Iniciar Upload
-        </button>
-      </form>
-    </div>
+                    <div className="w-full bg-black relative">
+                        {post.isLive ? (
+                            <div className="h-64 flex items-center justify-center bg-gray-900 relative">
+                                <span className="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded animate-pulse">AO VIVO</span>
+                                <i className="fas fa-play-circle text-6xl text-white/50"></i>
+                            </div>
+                        ) : post.type === 'video' ? (
+                            <video src={post.content} controls className="w-full h-64 object-cover"></video>
+                        ) : (
+                            <img src={post.content} className="w-full h-auto object-cover max-h-96" />
+                        )}
+                    </div>
 
-  </div>
+                    <div className="p-4">
+                        <div className="flex justify-between items-center mb-3">
+                            <div className="flex gap-4">
+                                <button onClick={() => onLike(post.id)} className="text-gray-300 hover:text-afro-accent transition flex items-center gap-2">
+                                    <i className={`${post.likes > 0 ? 'fas text-afro-accent' : 'far'} fa-heart`}></i> {post.likes}
+                                </button>
+                                <button className="text-gray-300 hover:text-afro-primary transition flex items-center gap-2">
+                                    <i className="far fa-comment"></i> {post.comments.length}
+                                </button>
+                                <button className="text-gray-300 hover:text-green-400 transition">
+                                    <i className="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                            <button className="text-gray-300 hover:text-afro-gold">
+                                <i className="far fa-bookmark"></i>
+                            </button>
+                        </div>
+                        <h3 className="font-bold text-lg mb-1">{post.title}</h3>
+                        {post.isLive && <p className="text-sm text-red-400 font-bold">{post.viewers} assistindo agora</p>}
+                    </div>
+                </div>
+            );
+        };
 
-  <!-- Rodapé -->
-  <footer>
-    <p>Desenvolvido por <strong>Dala De Carvalho</strong> | Afrokódico Engine v2.5</p>
-    <p style="margin-top: 10px;">
-      <a href="#" style="color: var(--primary-color); text-decoration: none;">Privacidade</a> | 
-      <a href="#" style="color: var(--primary-color); text-decoration: none;">Termos de Evolução</a>
-    </p>
-  </footer>
+        // 4. Seção de Monetização e Premium
+        const MonetizationHub = () => (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
+                {/* Carteira */}
+                <div className="glass p-6 rounded-xl md:col-span-3 flex justify-between items-center bg-gradient-to-r from-slate-900 to-slate-800">
+                    <div>
+                        <h3 className="text-gray-400 text-sm">Saldo Total Estimado</h3>
+                        <div className="text-3xl font-orbitron text-afro-gold mt-1">1,240.50 AKC</div>
+                        <div className="text-xs text-green-400 mt-1"><i className="fas fa-arrow-up"></i> +12% esta semana</div>
+                    </div>
+                    <button className="bg-afro-primary text-slate-900 px-6 py-2 rounded-lg font-bold hover:bg-white transition">Sacar</button>
+                </div>
 
-  <script>
-    // --- Lógica do Menu Lateral ---
-    function toggleMenu() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
-      
-      if (sidebar.classList.contains('active')) {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-      } else {
-        sidebar.classList.add('active');
-        overlay.classList.add('active');
-      }
-    }
+                {/* Planos */}
+                <div className="glass p-6 rounded-xl border-t-4 border-gray-500">
+                    <h3 className="text-xl font-bold mb-2">Criador Grátis</h3>
+                    <ul className="text-sm text-gray-400 space-y-2 mb-4">
+                        <li><i className="fas fa-check text-green-500 mr-2"></i> Uploads 720p</li>
+                        <li><i className="fas fa-check text-green-500 mr-2"></i> Anúncios no conteúdo</li>
+                        <li><i className="fas fa-check text-green-500 mr-2"></i> Taxa da plataforma: 30%</li>
+                    </ul>
+                    <button className="w-full py-2 border border-gray-500 rounded text-gray-300 cursor-not-allowed">Plano Atual</button>
+                </div>
 
-    // --- Controle de Abas (Tabs) ---
-    function switchTab(tabId, btnElement) {
-      // Esconde todos os containers
-      document.querySelectorAll('.content-grid, #upload').forEach(el => {
-        el.style.display = 'none';
-        el.classList.remove('active');
-      });
+                <div className="glass p-6 rounded-xl border-t-4 border-afro-primary relative transform scale-105 shadow-2xl">
+                    <span className="absolute -top-3 right-4 bg-afro-primary text-slate-900 text-xs font-bold px-2 py-1 rounded">MAIS POPULAR</span>
+                    <h3 className="text-xl font-bold mb-2 text-white">Nexus Pro</h3>
+                    <ul className="text-sm text-gray-300 space-y-2 mb-4">
+                        <li><i className="fas fa-check text-afro-primary mr-2"></i> Uploads 4K & VR</li>
+                        <li><i className="fas fa-check text-afro-primary mr-2"></i> Sem anúncios</li>
+                        <li><i className="fas fa-check text-afro-primary mr-2"></i> Taxa da plataforma: 5%</li>
+                        <li><i className="fas fa-check text-afro-primary mr-2"></i> Badge de Verificado</li>
+                    </ul>
+                    <button className="w-full py-2 bg-afro-primary text-slate-900 font-bold rounded hover:bg-white transition">Assinar (20 AKC/mês)</button>
+                </div>
 
-      // Remove active dos botões
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                <div className="glass p-6 rounded-xl border-t-4 border-afro-gold">
+                    <h3 className="text-xl font-bold mb-2 text-afro-gold">Partner</h3>
+                    <ul className="text-sm text-gray-400 space-y-2 mb-4">
+                        <li><i className="fas fa-check text-afro-gold mr-2"></i> Streaming ilimitado</li>
+                        <li><i className="fas fa-check text-afro-gold mr-2"></i> Monetização direta</li>
+                        <li><i className="fas fa-check text-afro-gold mr-2"></i> Suporte Dedicado</li>
+                    </ul>
+                    <button className="w-full py-2 border border-afro-gold text-afro-gold rounded hover:bg-afro-gold hover:text-slate-900 transition">Contatar Vendas</button>
+                </div>
+            </div>
+        );
 
-      // Mostra o container selecionado
-      const selected = document.getElementById(tabId);
-      if(tabId === 'social' || tabId === 'edu') {
-        selected.style.display = 'grid'; // Grid para conteúdos
-        selected.classList.add('active');
-      } else {
-        selected.style.display = 'block'; // Block para formulários
-      }
+        // 5. Educação e Quizzes
+        const EduSection = () => (
+            <div className="space-y-6 animate-fade-in">
+                <div className="glass p-6 rounded-xl flex flex-col md:flex-row gap-6 items-center">
+                    <div className="flex-1">
+                        <span className="bg-afro-secondary/20 text-afro-secondary text-xs px-2 py-1 rounded mb-2 inline-block">Machine Learning</span>
+                        <h2 className="text-2xl font-bold mb-2">Introdução à IA Generativa</h2>
+                        <p className="text-gray-400 text-sm mb-4">Aprenda a criar modelos de arte digital usando Python e TensorFlow. Curso completo com certificação na blockchain.</p>
+                        <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
+                            <div className="bg-afro-primary h-2 rounded-full" style={{width: '45%'}}></div>
+                        </div>
+                        <p className="text-xs text-gray-500 mb-4">Progresso: 45%</p>
+                        <button className="bg-white text-slate-900 px-6 py-2 rounded font-bold hover:bg-gray-200">Continuar Aula</button>
+                    </div>
+                    <div className="w-full md:w-1/3">
+                         <div className="aspect-video bg-black rounded-lg flex items-center justify-center cursor-pointer hover:opacity-80 transition relative">
+                            <i className="fas fa-play text-4xl text-white"></i>
+                         </div>
+                    </div>
+                </div>
 
-      // Ativa o botão
-      btnElement.classList.add('active');
-    }
+                <h3 className="font-orbitron text-xl mt-8 mb-4">Cursos Recomendados para Você</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[1,2,3].map(i => (
+                        <div key={i} className="glass p-4 rounded-lg hover:bg-white/5 transition cursor-pointer">
+                            <div className="h-32 bg-slate-700 rounded mb-3 overflow-hidden">
+                                <img src={`https://source.unsplash.com/random/400x300?tech,code&sig=${i}`} className="w-full h-full object-cover" />
+                            </div>
+                            <h4 className="font-bold text-sm">Desenvolvimento Web3 {i}</h4>
+                            <p className="text-xs text-gray-400 mt-1">Por Afrokódico Academy</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
 
-    // --- Sistema de Tema ---
-    function setTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      // Salvar preferência no LocalStorage poderia ser implementado aqui
-    }
+        // --- COMPONENTE PRINCIPAL (APP) ---
+        const App = () => {
+            const [sidebarOpen, setSidebarOpen] = useState(false);
+            const [activeTab, setActiveTab] = useState('feed');
+            const [posts, setPosts] = useState(initialPosts);
+            const [searchTerm, setSearchTerm] = useState("");
+            const [userStats, setUserStats] = useState({ level: 5, coins: 2500 });
 
-    // --- Simulação de Busca ---
-    function filterContent() {
-      const term = document.getElementById('searchInput').value.toLowerCase();
-      const cards = document.querySelectorAll('.card');
+            // Simulação de "Mount" para carregar dados
+            useEffect(() => {
+                // Simula notificação de boas-vindas
+                setTimeout(() => console.log("Conectado à rede Afrokódica."), 1000);
+            }, []);
 
-      cards.forEach(card => {
-        const title = card.querySelector('.card-title').textContent.toLowerCase();
-        const badge = card.querySelector('.card-badge').textContent.toLowerCase();
-        
-        if (title.includes(term) || badge.includes(term)) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
+            const handleUpload = (newPost) => {
+                setPosts([newPost, ...posts]);
+                setActiveTab('feed');
+                setUserStats({ ...userStats, coins: userStats.coins + 50 }); // Ganha moedas ao postar
+            };
 
-    // --- Simulação de Upload (Interativo) ---
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
+            const handleLike = (id) => {
+                setPosts(posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
+            };
 
-    dropZone.addEventListener('click', () => fileInput.click());
+            // Filtragem de Posts
+            const filteredPosts = posts.filter(p => 
+                p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                p.category.toLowerCase().includes(searchTerm.toLowerCase())
+            );
 
-    fileInput.addEventListener('change', (e) => {
-      const files = e.target.files;
-      const previewContainer = document.getElementById('filePreview');
-      previewContainer.innerHTML = ''; // Limpa preview anterior
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-slate-900 via-[#0f172a] to-[#1e1b4b]">
+                    
+                    {/* Header Mobile/Desktop */}
+                    <header className="fixed top-0 w-full glass z-40 px-4 py-3 flex justify-between items-center shadow-lg">
+                        <div className="flex items-center gap-4">
+                            <button onClick={() => setSidebarOpen(true)} className="text-white text-xl hover:text-afro-primary transition">
+                                <i className="fas fa-bars"></i>
+                            </button>
+                            <h1 className="font-orbitron text-xl md:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-afro-primary to-afro-secondary hidden sm:block">
+                                AFROKÓDICO NEXUS
+                            </h1>
+                        </div>
 
-      Array.from(files).forEach(file => {
-        const div = document.createElement('div');
-        div.style.background = 'rgba(255,255,255,0.1)';
-        div.style.padding = '10px';
-        div.style.borderRadius = '5px';
-        div.innerHTML = `<i class="fas fa-check-circle" style="color: var(--primary-color)"></i> ${file.name}`;
-        previewContainer.appendChild(div);
-      });
-    });
+                        {/* Barra de Pesquisa */}
+                        <div className="flex-1 max-w-md mx-4 relative">
+                            <input 
+                                type="text" 
+                                placeholder="Pesquisar criadores, tags, vídeos..." 
+                                className="w-full bg-slate-800/50 border border-white/10 rounded-full py-2 px-10 text-sm text-white focus:outline-none focus:border-afro-primary transition"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <i className="fas fa-search absolute left-4 top-2.5 text-gray-400"></i>
+                        </div>
 
-    function handleUpload(e) {
-      e.preventDefault();
-      const btn = e.target.querySelector('button');
-      const originalText = btn.innerText;
-      
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando Blocos de Dados...';
-      
-      setTimeout(() => {
-        alert('Upload Concluído! Seus arquivos foram integrados à rede.');
-        btn.innerText = originalText;
-        document.getElementById('filePreview').innerHTML = '';
-        document.getElementById('uploadForm').reset();
-      }, 2000);
-    }
+                        <div className="flex items-center gap-4">
+                            <button className="relative text-gray-300 hover:text-white">
+                                <i className="far fa-bell text-xl"></i>
+                                <span className="absolute -top-1 -right-1 bg-red-500 w-2 h-2 rounded-full"></span>
+                            </button>
+                            <img src="https://i.pravatar.cc/150?img=11" className="w-8 h-8 rounded-full border border-afro-primary cursor-pointer" onClick={() => setActiveTab('premium')} />
+                        </div>
+                    </header>
 
-    // --- Funções do Menu Lateral ---
-    function showSection(section) {
-      toggleMenu(); // Fecha o menu
-      if(section === 'monetization') {
-        alert('Acesso à Carteira Digital: \nSaldo atual: 0.00 AKC \nConecte sua carteira para retirar.');
-      } else if (section === 'profile') {
-        alert('Redirecionando para o perfil de Dala De Carvalho...');
-      } else {
-        alert('Configurações salvas na nuvem neural.');
-      }
-    }
+                    <Sidebar 
+                        isOpen={sidebarOpen} 
+                        toggle={() => setSidebarOpen(false)} 
+                        activeTab={activeTab} 
+                        setTab={(tab) => { setActiveTab(tab); setSidebarOpen(false); }}
+                        userStats={userStats}
+                    />
 
-  </script>
+                    {/* Overlay para fechar sidebar */}
+                    {sidebarOpen && <div className="fixed inset-0 bg-black/80 z-40" onClick={() => setSidebarOpen(false)}></div>}
+
+                    {/* Área Principal de Conteúdo */}
+                    <main className="pt-24 pb-20 px-4 max-w-5xl mx-auto min-h-screen">
+                        
+                        {activeTab === 'feed' && (
+                            <div className="animate-fade-in">
+                                {/* Histórias / Stories (Simulado) */}
+                                <div className="flex gap-4 overflow-x-auto pb-4 mb-6 scrollbar-hide">
+                                    {['Live', 'Tech', 'Music', 'Art', 'Crypto'].map((story, i) => (
+                                        <div key={i} className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer">
+                                            <div className={`w-16 h-16 rounded-full p-[2px] ${i === 0 ? 'bg-red-500 animate-pulse' : 'bg-gradient-to-tr from-afro-primary to-afro-accent'}`}>
+                                                <div className="w-full h-full bg-slate-900 rounded-full border-2 border-slate-900 overflow-hidden">
+                                                    <img src={`https://source.unsplash.com/random/100x100?sig=${i}`} className="w-full h-full object-cover" />
+                                                </div>
+                                            </div>
+                                            <span className="text-xs text-gray-300">{story}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    <div className="lg:col-span-2">
+                                        <div className="mb-4 flex justify-between items-center text-sm text-gray-400">
+                                            <span>Mostrando {filteredPosts.length} resultados</span>
+                                            <div className="flex gap-2">
+                                                <button className="hover:text-white">Trending</button>
+                                                <button className="hover:text-white">Novo</button>
+                                            </div>
+                                        </div>
+                                        {filteredPosts.map(post => (
+                                            <MediaCard key={post.id} post={post} onLike={handleLike} />
+                                        ))}
+                                    </div>
+                                    
+                                    {/* Sidebar Direita (Recomendações/Ads) */}
+                                    <div className="hidden lg:block space-y-6">
+                                        <div className="glass p-4 rounded-xl">
+                                            <h4 className="font-bold mb-3 text-afro-secondary">Tendências para Você</h4>
+                                            {['#AfroFuturismo', '#ReactJS', '#AngolaTech', '#Web3Music'].map(tag => (
+                                                <div key={tag} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
+                                                    <span className="text-sm text-gray-300">{tag}</span>
+                                                    <span className="text-xs text-gray-500">2k posts</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        
+                                        {/* Espaço de Anúncio Simulado */}
+                                        <div className="bg-gradient-to-br from-purple-900 to-indigo-900 p-4 rounded-xl text-center relative overflow-hidden group cursor-pointer">
+                                            <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition"></div>
+                                            <span className="text-[10px] uppercase tracking-widest text-white/50 mb-2 block">Patrocinado</span>
+                                            <h4 className="font-bold text-lg mb-2">Afrokódico Cloud</h4>
+                                            <p className="text-xs text-gray-300 mb-3">Hospedagem descentralizada para seus vídeos.</p>
+                                            <button className="bg-white text-purple-900 text-xs font-bold px-4 py-2 rounded-full">Saiba Mais</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'upload' && <UploadStudio onUpload={handleUpload} />}
+                        {activeTab === 'premium' && <MonetizationHub />}
+                        {activeTab === 'edu' && <EduSection />}
+                        {activeTab === 'live' && (
+                             <div className="text-center py-20 animate-fade-in">
+                                <div className="inline-block p-4 rounded-full bg-red-500/20 mb-4">
+                                    <i className="fas fa-satellite-dish text-4xl text-red-500 animate-pulse"></i>
+                                </div>
+                                <h2 className="text-2xl font-bold mb-2">Centro de Transmissão</h2>
+                                <p className="text-gray-400 mb-8">Conecte seu software de streaming (OBS) ou use a câmera do dispositivo.</p>
+                                <button className="bg-red-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-red-700 transition shadow-lg shadow-red-500/30">
+                                    INICIAR STREAM
+                                </button>
+                             </div>
+                        )}
+
+                    </main>
+
+                    {/* Bottom Nav para Mobile */}
+                    <nav className="fixed bottom-0 w-full glass border-t border-white/10 md:hidden flex justify-around p-3 z-40">
+                        <button onClick={() => setActiveTab('feed')} className={`text-xl ${activeTab === 'feed' ? 'text-afro-primary' : 'text-gray-500'}`}><i className="fas fa-home"></i></button>
+                        <button onClick={() => setActiveTab('edu')} className={`text-xl ${activeTab === 'edu' ? 'text-afro-primary' : 'text-gray-500'}`}><i className="fas fa-graduation-cap"></i></button>
+                        <button onClick={() => setActiveTab('upload')} className="bg-afro-primary text-slate-900 rounded-full w-12 h-12 flex items-center justify-center -mt-8 shadow-lg shadow-afro-primary/50"><i className="fas fa-plus"></i></button>
+                        <button onClick={() => setActiveTab('live')} className={`text-xl ${activeTab === 'live' ? 'text-red-500' : 'text-gray-500'}`}><i className="fas fa-video"></i></button>
+                        <button onClick={() => setActiveTab('premium')} className={`text-xl ${activeTab === 'premium' ? 'text-afro-primary' : 'text-gray-500'}`}><i className="fas fa-wallet"></i></button>
+                    </nav>
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
+
 
